@@ -1,0 +1,124 @@
+/* NOTE: This is based off 'style.css' from the "JSQuiz" project */
+
+body {
+	background-color: darkblue ;
+	color: #eee ;
+}
+
+/*--------------------------------------------------------
+|                  Main page sections                    |
+--------------------------------------------------------*/
+
+/* Classes for navbar styling */
+.my-navbar {
+	font-family: 'Roboto', sans-serif ;
+}
+.my-navbar .nav-link {
+	color: #ddd ;
+}
+
+/* Container for body-content (between header and footer) */
+.my-body-container {
+	 width: 95%;
+	 max-width: 800px;
+	 margin: 2em auto 0 auto ;
+	 min-height: max(100vh, 800px); /* Ensure footer is far enough down if the rest of the content takes up insufficient vertical space */
+}
+
+/* Class for footer styling */
+.my-footer {
+	margin-top: 2em ;
+	padding: 0.5em;
+	background-color: #3333ff ;
+	border-top: 2px solid #0000ff ;
+	font-family: 'Roboto', sans-serif ;
+}
+.my-footer div {
+	display: flex ;
+	gap: 1em ;
+	justify-content: space-between ;
+}
+
+/* For the site-info page */
+.my-bordered-textcontent {
+	border: 2px solid blue ;
+	padding: 16px;
+}
+
+/*--------------------------------------------------------
+|                      Subsections                       |
+--------------------------------------------------------*/
+
+/* Styling for intro-text */
+.my-game-intro-text {
+	background-color: #222288 ;
+	color: white ;
+	padding: 20px ;
+}
+
+/* Styling for progress status message */
+.my-progress-status {
+	font-size: 120% ;
+	font-weight: bold ;
+	margin-bottom: 1em;
+	font-family: 'Roboto', sans-serif ;
+	text-align: center;
+}
+
+/* Styling for game output and input elements */
+.my-game-output {
+	min-height: 300px;
+	background-color: black ;
+	color: #eee ;
+	font-family: monospace ;
+	padding: 8px ;
+}
+.my-command-input-container {
+	background-color: black ;
+	display: flex ;
+	padding: 4px 8px ;
+	align-items: baseline ;
+	font-family: monospace ;
+}
+.my-command-input {
+	width: 100%;
+	background-color: black ;
+	border: none ;
+	outline: none ;
+	color: white ;
+	font-family: monospace ;
+}
+
+/*--------------------------------------------------------
+|                  Misc element styling                  |
+--------------------------------------------------------*/
+
+.my-button {
+	width: 100% ;
+	border-radius: 0 ;
+}
+
+/*--------------------------------------------------------
+|   Additional classes for Bootstrap component styling   |
+--------------------------------------------------------*/
+
+/* Class for custom styling to be used in conjuction with Bootstrap 'carousel' class */
+.my-carousel {
+	border: 8px solid #222288ff ;;
+	height: 40vh ;
+	min-height: 300px;
+	max-height: 360px;
+}
+.my-carousel img {
+	object-fit: cover ;
+	height: 40vh ;
+	min-height: 300px;
+	max-height: 360px ;
+	filter: brightness(0.75) ;
+	border: 3px solid black;
+}
+.my-carousel-caption {
+	padding-bottom: 0 ;
+	font-size: 200%;
+	filter: drop-shadow(0 0 0.3rem black) ;
+}
