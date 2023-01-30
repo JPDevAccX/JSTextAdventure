@@ -20,7 +20,6 @@ export default class GameUIManager {
 				e.target.value = '' ;
 			}
 		}) ;
-		
 	}
 
 	initForGame(gameTitle, gameData) {
@@ -36,7 +35,7 @@ export default class GameUIManager {
 			break ;
 			case 'g': // IN-GAME
 				this.setProgressDescription(gameState.score) ;
-				this.showRoomStatus(gameState.currentRoom) ;
+				this.showRoomStatus(gameState.player.currentRoom) ;
 			break ;
 			case 'w': // WIN
 			case 'l': // LOSE
@@ -53,7 +52,7 @@ export default class GameUIManager {
 
 	showRoomStatus(currentRoom) {
 		this.setVisibilities(false, true, false) ;
-		this.els.gameOutput.innerHTML = markupToHtml(currentRoom.roomDef.description) ;
+		this.els.gameOutput.innerHTML = markupToHtml(currentRoom.description) ;
 	}
 
 	// Display win / lose results
