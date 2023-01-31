@@ -5,7 +5,11 @@ export default class CommandParser {
 		...{ // Merge in default substitutions...
 			'(^| )look at ': ' examine ',
 			'(^| )look ': ' examine ',
-			'(^| )ex ': ' examine '
+			'(^| )ex ': ' examine ',
+			'^i$': 'inventory',
+			'^inv$': 'inventory',
+			'(^| )pick up ' : ' get ',
+			'(^| )retrieve ' : ' get '
 		},
 		...CommandParser.getDirectionSubs(), // ...with directional subs...
 		...subs //...and with custom subs
@@ -13,10 +17,14 @@ export default class CommandParser {
 
 		this.verbs = [
 		...[  // Merge in default verbs...
-			'go', 'examine'
+			'go', 'examine', 'get', 'drop'
 		],
 			...verbs // ...with custom verbs
 		] ;
+
+		this.basicCommands = [
+			'inventory'
+		]
 
 		// Compile the substitution 'from' regexps ahead of time
 		this.compiledRegExps = {} ;
@@ -57,6 +65,9 @@ export default class CommandParser {
 		const commandTokens = command.split(' ') ;
 		if (this.verbs.includes(commandTokens[0])) {
 			parseData = { commandType: 'VN', verb: commandTokens[0], object: commandTokens[1] } ; // Verb-noun structure (e.g. "go west" or "attack monster")
+		}
+		else if (this.basicCommands.includes(commandTokens[0])) {
+			parseData = { commandType: 'COM', command: commandTokens[0] } ; // Basic command (e.g "inventory")
 		}
 
 		console.log("parseCommand() : parseData =", parseData) ;
