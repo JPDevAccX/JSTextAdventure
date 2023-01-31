@@ -1,4 +1,4 @@
-// Note: This is re-used from the "JSQuiz" project
+// Note: Some functions re-used from the "JSQuiz" project
 
 // A simple way of deep-cloning an object
 // We use this so we can return a copy of an object from a function (or class method) instead of the original object
@@ -10,6 +10,7 @@ function deepClone(obj) {
 // Simple markup system with escaping of HTML special characters (so we can safely use innerHTML even if the data isn't trusted)
 function markupToHtml(markup) {
 	markup = htmlspecialchars(markup) ;
+	markup = nl2br(markup) ;
 
 	const replaceTable = {
 		'[li]' : '<li>', '[/li]' : '</li>',
@@ -39,7 +40,35 @@ function htmlspecialchars(str) {
   return str.replace(/[&<>"']/g, function(m) { return map[m]; });
 }
 
+// Replace newlines with <br> (equivalent to PHP function of the same name)
+function nl2br(str) {
+	return str.replaceAll("\n", "<br>") ;
+}
+
 // Retrieve the elements for the specified selectors and return as an object
 function getElementsBySelector(keysToSelectorsTable, keysToRetrieve) {
 	return Object.fromEntries(keysToRetrieve.map(key => ([key, document.querySelector(keysToSelectorsTable[key])]))) ;
+}
+
+// Log error to console and return null
+function consoleErrAndReturnNull(errMsg) {
+	console.error(errMsg) ;
+	return null ;
+}
+
+// Check arg is instance of type
+function instanceCheck(arg, type) {
+	return (arg instanceof type) ;
+}
+
+// Create a natural-language string describing a list of entities
+function createEntityListDescription(entityList, entityPrependStr = '', entityAppendStr = '') {
+	let listStr = '' ;
+	for (const [i, entryStr] of entityList.entries()) {
+		listStr += entityPrependStr + entryStr + entityAppendStr ;
+		if (entityList.length < 3 && i < entityList.length - 1) listStr += ' and ' ;
+		else if (entityList.length >= 3 && i < entityList.length - 2) listStr += ', ' ;
+		else if (entityList.length >= 3 && i < entityList.length - 1) listStr += ', and ' ;
+	}
+	return listStr ;
 }

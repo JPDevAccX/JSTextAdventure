@@ -7,7 +7,7 @@ const VALID_TRAVEL_DIRECTIONS = ['n', 'e', 's', 'w', 'u', 'd']
 export default class GameRunManager {
 	newRun(gameData) {
 		this.commandParser = new CommandParser() ;
-		this.gameState = GameStateSetup.setup(gameData) ; // Setup intitial state from game data
+		this.gameState = GameStateSetup.setup(gameData) ; // Set up initial state from game data
 		this.gameState = { // Merge in player state, etc
 			...this.gameState,
 			...{
@@ -39,23 +39,31 @@ export default class GameRunManager {
 		// Basic verb-noun commands
 		if (commandData.commandType === 'VN') {
 			// Travel
-			const dest = commandData.object ;
-			if (VALID_TRAVEL_DIRECTIONS.includes(dest)) {
-				const linkedRoom = this.gameState.player.currentRoom.getLinkedRoom(dest) ; ;
-				if (linkedRoom)	this.gameState.player.currentRoom = linkedRoom ;
+			if (commandData.verb === 'go') {
+				const dest = commandData.object ;
+				if (VALID_TRAVEL_DIRECTIONS.includes(dest)) {
+					const linkedRoom = this.gameState.player.currentRoom.getLinkedRoom(dest) ; ;
+					if (linkedRoom)	this.gameState.player.currentRoom = linkedRoom ;
+					else {
+						this.gameState.lastErrorMsg = 'You cannot go in that direction' ;
+						alert(this.gameState.lastErrorMsg) ;
+					} 
+				}
 				else {
-					this.gameState.lastErrorMsg = 'You cannot go in that direction' ;
+					this.gameState.lastErrorMsg = 'Unknown direction' ;
 					alert(this.gameState.lastErrorMsg) ;
-				} 
+				}
 			}
-			else {
-				this.gameState.lastErrorMsg = 'Unknown direction' ;
-				alert(this.gameState.lastErrorMsg) ;
+			// Examine
+			else if (commandData.verb === 'examine') {
+				const matchingItem = this.gameState.player.currentRoom.retrieveItemWithName(commandData.object) ;
+				if (matchingItem) alert("The " + matchingItem.name +" is " + matchingItem.description) ;
+				else alert("That item doesn't seem to be present")
 			}
 		}
 		else {
 			this.gameState.lastErrorMsg = 'Unknown command' ;
-				alert(this.gameState.lastErrorMsg) ;
+			alert(this.gameState.lastErrorMsg) ;
 		}
 
 		// Return current game state

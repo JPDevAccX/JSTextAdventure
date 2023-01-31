@@ -3,11 +3,12 @@
 import Room from './entityTypes/room.js' ;
 
 export default class GameStateSetupRooms {
-	static setup(gameData) {
+	static setup(gameData, itemsById) {
 		const noRoomId = '|'.repeat(gameData.gameMap.idLength) ; // The room id denoting an empty space
 		gameData.gameMap.data = GameStateSetupRooms.preProcessGameMapData(gameData.gameMap.data, gameData.gameMap.idLength, noRoomId) ;
 		const roomsById = GameStateSetupRooms.createRoomObjects(gameData.gameMap, gameData.roomDefs, noRoomId) ;
 		GameStateSetupRooms.linkRoomObjectsByExits(roomsById, gameData.gameMap, noRoomId) ;
+		GameStateSetupRooms.addItems(gameData.roomDefs, roomsById, itemsById) ;
 		return roomsById ;
 	}
 
@@ -94,5 +95,14 @@ export default class GameStateSetupRooms {
 	// Get the map room id at the specified character index
 	static readMapRoomId(mapData, charIndex, idStrLength) {
 		return mapData.substring(charIndex + 1, charIndex + idStrLength - 1) ;
+	}
+
+	// Add items to rooms
+	static addItems(roomDefs, roomsById, itemsById) {
+		for (const [roomId, room] of Object.entries(roomsById)) {
+			for (const itemId of roomDefs[roomId].contents || []) {
+				room.addItem(itemsById[itemId]) ;
+			}
+		}
 	}
 }
