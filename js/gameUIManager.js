@@ -7,17 +7,17 @@ export default class GameUIManager {
 		const keysToRetrieve = [
 			'gameTitle', 'gameSelectorContainer', 'gameIntroText', 
 			'gameStartButton', 
-			'gameMainContainer', 'gameProgressStatus', 'gameOutput', 'gameInput',
+			'gameMainContainer', 'gameProgressStatus', 'currentRoomNameDisplay', 'gameOutput', 'gameInput',
 			'gameResultsContainer'
 		] ;
 		this.els = getElementsBySelector(selectors, keysToRetrieve) ;
 
 		// Add event listeners for the start-game button and command input
 		this.els.gameStartButton.addEventListener('click', gameStartCallback) ;
-		this.els.gameInput.addEventListener('keydown', (e) => {
+		document.addEventListener('keydown', (e) => {
 			if (e.key === "Enter") {
-				handleCommandCallback(e.target.value) ;
-				e.target.value = '' ;
+				handleCommandCallback(this.els.gameInput.value) ;
+				this.els.gameInput.value = '' ;
 			}
 		}) ;
 	}
@@ -47,12 +47,14 @@ export default class GameUIManager {
 	}
 
 	setProgressDescription(score) {
-		this.els.gameProgressStatus.innerHTML = 'Score: ' + score ;
+		this.els.gameProgressStatus.innerHTML = 'Score: ' + score + "<br>" ;
 	}
 
 	showRoomStatus(currentRoom) {
 		this.setVisibilities(false, true, false) ;
-		this.els.gameOutput.innerHTML = markupToHtml(currentRoom.description) ;
+		this.els.currentRoomNameDisplay.innerText = currentRoom.name ;
+		this.els.gameOutput.innerHTML = markupToHtml(currentRoom.description) + "<br>";
+		this.els.gameOutput.innerHTML += markupToHtml(currentRoom.getExitsDescription()) ;
 	}
 
 	// Display win / lose results
