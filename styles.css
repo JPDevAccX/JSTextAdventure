@@ -75,7 +75,8 @@ body {
 
 /* Styling for game output and input elements */
 .my-game-output {
-	min-height: 300px;
+	height: 300px;
+	overflow-y: scroll ;
 	background-color: black ;
 	color: #eee ;
 	font-family: monospace ;
@@ -104,6 +105,14 @@ body {
 .my-button {
 	width: 100% ;
 	border-radius: 0 ;
+}
+
+/*--------------------------------------------------------
+|                     Text styling                       |
+--------------------------------------------------------*/
+
+.my-err {
+	color: red ;
 }
 
 /*--------------------------------------------------------
