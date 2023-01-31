@@ -3,7 +3,7 @@ import Item from "./item.js" ;
 export default class Container extends Item {
 	constructor(name, description, maxItems = null) {
 		super(name, description) ;
-		this._maxItems = maxItems ;
+		this._maxItems = maxItems ; // (currently unused)
 		this._items = [] ; // No items initially
 	}
 	
@@ -23,7 +23,7 @@ export default class Container extends Item {
 		if (!instanceCheck(item, Item)) return consoleErrAndReturnNull("Argument 1 is not an Item") ;
 		if (!instanceCheck(destContainer, Container)) return consoleErrAndReturnNull("Argument 2 is not a Container") ;
 		destContainer.addItem(item) ;
-		this._items = this._items.filter(itemEntry => itemEntry !== item) ;
+		this.removeItem(item) ;
 	}
 
 	getContentsDescription() {

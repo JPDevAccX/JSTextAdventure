@@ -2,6 +2,7 @@
 import GameStateSetup from "./gameStateSetup.js" ;
 import CommandParser from "./commandParser.js" ;
 import OutputBuffer from "./outputBuffer.js";
+import Player from "./entityTypes/player.js";
 
 const VALID_TRAVEL_DIRECTIONS = ['n', 'e', 's', 'w', 'u', 'd']
 
@@ -12,7 +13,7 @@ export default class GameRunManager {
 		this.gameState = { // Merge in player state, etc
 			...this.gameState,
 			...{
-				player : {},
+				player : new Player(),
 				score: 0,
 				outputBuffer: new OutputBuffer()
 			}
@@ -42,8 +43,15 @@ export default class GameRunManager {
 		this.outCommand(command) ;
 		const commandData = this.commandParser.parseCommand(command) ;
 
+		// Basic commands
+		if (commandData.commandType === 'COM') {
+			// Inventory
+			if (commandData.command === 'inventory') {
+				this.outInfo("You are carrying " + (this.gameState.player.inventory.getContentsDescription() || 'nothing')) ;
+			}
+		}
 		// Basic verb-noun commands
-		if (commandData.commandType === 'VN') {
+		else if (commandData.commandType === 'VN') {
 			// Travel
 			if (commandData.verb === 'go') {
 				const dest = commandData.object ;
@@ -67,6 +75,26 @@ export default class GameRunManager {
 				const matchingItem = this.gameState.player.currentRoom.retrieveItemWithName(commandData.object) ;
 				if (matchingItem) this.outInfo("The " + matchingItem.name +" is " + matchingItem.description) ;
 				else this.outErr("I cannot see any '"+ commandData.object +"' here")
+			}
+			// Get
+			else if (commandData.verb === 'get') {
+				const matchingItem = this.gameState.player.currentRoom.retrieveItemWithName(commandData.object) ;
+				if (matchingItem) {
+					// TODO: Any extra checks that item can actually be picked up by player
+					this.gameState.player.currentRoom.moveItem(matchingItem, this.gameState.player.inventory) ;
+					this.outInfo("Picked up the [b]" + matchingItem.name + "[/b]") ;
+				}
+				else this.outErr("I cannot see any '"+ commandData.object +"' here")
+			}
+			// Drop
+			else if (commandData.verb === 'drop') {
+				const matchingItem = this.gameState.player.inventory.retrieveItemWithName(commandData.object) ;
+				if (matchingItem) {
+					// TODO: Any extra checks that item can actually be dropped by player
+					this.gameState.player.inventory.moveItem(matchingItem, this.gameState.player.currentRoom) ;
+					this.outInfo("Dropped the [b]" + matchingItem.name + "[/b]") ;
+				}
+				else this.outErr("I don't have any '"+ commandData.object +"' in my inventory")
 			}
 		}
 		else {
