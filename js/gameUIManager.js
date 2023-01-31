@@ -35,7 +35,7 @@ export default class GameUIManager {
 			break ;
 			case 'g': // IN-GAME
 				this.setProgressDescription(gameState.score) ;
-				this.showRoomStatus(gameState.player.currentRoom) ;
+				this.showRoomStatus(gameState.player.currentRoom, gameState.outputBuffer) ;
 			break ;
 			case 'w': // WIN
 			case 'l': // LOSE
@@ -50,10 +50,11 @@ export default class GameUIManager {
 		this.els.gameProgressStatus.innerHTML = 'Score: ' + score + "<br>" ;
 	}
 
-	showRoomStatus(currentRoom) {
+	showRoomStatus(currentRoom, outputBuffer) {
 		this.setVisibilities(false, true, false) ;
 		this.els.currentRoomNameDisplay.innerText = currentRoom.name ;
-		this.els.gameOutput.innerHTML = markupToHtml(currentRoom.getFullDescription()) ;
+		this.els.gameOutput.innerHTML = outputBuffer.getProcessedBufferText((entry) => markupToHtml(entry) + "<br>") ;
+		this.els.gameOutput.scrollTo(0, 1000) ; // Scroll down to bottom
 	}
 
 	// Display win / lose results

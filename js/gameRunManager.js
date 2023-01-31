@@ -1,6 +1,7 @@
 // Type: Module
 import GameStateSetup from "./gameStateSetup.js" ;
 import CommandParser from "./commandParser.js" ;
+import OutputBuffer from "./outputBuffer.js";
 
 const VALID_TRAVEL_DIRECTIONS = ['n', 'e', 's', 'w', 'u', 'd']
 
@@ -13,12 +14,15 @@ export default class GameRunManager {
 			...{
 				player : {},
 				score: 0,
-				lastErrorMsg: null
+				outputBuffer: new OutputBuffer()
 			}
 		} ;
 
 		// Retrieve start room and set it as player's current location
 		this.gameState.player.currentRoom = GameRunManager.findStartRoom(this.gameState.roomsById, this.gameState.startRoomId) ;
+
+		// Initial room description
+		this.gameState.outputBuffer.add(this.gameState.player.currentRoom.getFullDescription()) ;
 
 		// Return current game state
 		return ['g', this.gameState] ;
@@ -33,7 +37,9 @@ export default class GameRunManager {
 	}
 
 	runCommand(command) {
-		this.gameState.lastErrorMsg = null ;
+		if (command === '') return ['g', this.gameState] ; // Ignore blank commands
+		
+		this.outCommand(command) ;
 		const commandData = this.commandParser.parseCommand(command) ;
 
 		// Basic verb-noun commands
@@ -43,30 +49,41 @@ export default class GameRunManager {
 				const dest = commandData.object ;
 				if (VALID_TRAVEL_DIRECTIONS.includes(dest)) {
 					const linkedRoom = this.gameState.player.currentRoom.getLinkedRoom(dest) ; ;
-					if (linkedRoom)	this.gameState.player.currentRoom = linkedRoom ;
+					if (linkedRoom)	{
+						this.gameState.player.currentRoom = linkedRoom ; // Move player
+						this.gameState.outputBuffer.clear() ;
+						this.outInfo(linkedRoom.getFullDescription()) ;
+					}
 					else {
-						this.gameState.lastErrorMsg = 'You cannot go in that direction' ;
-						alert(this.gameState.lastErrorMsg) ;
+						this.outErr('You cannot go in that direction') ;
 					} 
 				}
 				else {
-					this.gameState.lastErrorMsg = 'Unknown direction' ;
-					alert(this.gameState.lastErrorMsg) ;
+					this.outErr('Unknown direction') ;
 				}
 			}
 			// Examine
 			else if (commandData.verb === 'examine') {
 				const matchingItem = this.gameState.player.currentRoom.retrieveItemWithName(commandData.object) ;
-				if (matchingItem) alert("The " + matchingItem.name +" is " + matchingItem.description) ;
-				else alert("That item doesn't seem to be present")
+				if (matchingItem) this.outInfo("The " + matchingItem.name +" is " + matchingItem.description) ;
+				else this.outErr("I cannot see any '"+ commandData.object +"' here")
 			}
 		}
 		else {
-			this.gameState.lastErrorMsg = 'Unknown command' ;
-			alert(this.gameState.lastErrorMsg) ;
+			this.outErr('Unknown command "'+ command + '"') ;
 		}
 
 		// Return current game state
 		return ['g', this.gameState] ;
+	}
+
+	outCommand(msg) {
+		this.gameState.outputBuffer.add('> ' + msg) ;
+	}
+	outInfo(msg) {
+		this.gameState.outputBuffer.add(msg) ;
+	}
+	outErr(msg) {
+		this.gameState.outputBuffer.add('> [err]' + msg + '[/err]') ;
 	}
 }
