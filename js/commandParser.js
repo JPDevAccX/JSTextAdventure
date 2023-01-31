@@ -3,6 +3,9 @@ export default class CommandParser {
 	constructor(subs = {}, verbs = []) {
 		this.subs = {
 		...{ // Merge in default substitutions...
+			'(^| )look at ': ' examine ',
+			'(^| )look ': ' examine ',
+			'(^| )ex ': ' examine '
 		},
 		...CommandParser.getDirectionSubs(), // ...with directional subs...
 		...subs //...and with custom subs
@@ -10,7 +13,7 @@ export default class CommandParser {
 
 		this.verbs = [
 		...[  // Merge in default verbs...
-			'go'
+			'go', 'examine'
 		],
 			...verbs // ...with custom verbs
 		] ;
@@ -47,11 +50,17 @@ export default class CommandParser {
 		}
 		command = command.trim().replaceAll(/ +/g, ' ') ;
 
+		console.log("parseCommand() : Command (after subs) = '" + command + "'")
+
 		// Parse
+		let parseData = { commandType: 'UNKNOWN' } ;
 		const commandTokens = command.split(' ') ;
 		if (this.verbs.includes(commandTokens[0])) {
-			return {commandType: 'VN', verb: commandTokens[0], object: commandTokens[1]} ; // Verb-noun structure (e.g. "go west" or "attack monster")
+			parseData = { commandType: 'VN', verb: commandTokens[0], object: commandTokens[1] } ; // Verb-noun structure (e.g. "go west" or "attack monster")
 		}
-		else return {commandType: 'UNKNOWN'} ;
+
+		console.log("parseCommand() : parseData =", parseData) ;
+
+		return parseData ;
 	}
 }

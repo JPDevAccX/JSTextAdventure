@@ -13,31 +13,32 @@ export default {
 		},
 		startRoomId: 'HOME',
 		data: `
-			|TRE1|      |TRA1|
-			|PUZ1||HOME||DEN1|
+			|TRE1|      |DEN1|
+			|PUZ1||HOME||TRA1|
 			|MON1||CRO1||PUZ2|
 		`,
 	},
 	roomDefs: {
 		'HOME' : {
 			name: "Home",
-			description: "It's home! It's where you start!"
+			description: "It's home! It's where you start!",
+			contents: ['TESTITEM']
 		},
 		'TRE1' : {
 			name: "Treasure Room 1",
 			description: "It's a treasure room! Treasure be here!"
 		},
-		'TRA1' : {
-			name: "Trap Room",
-			description: "It's a trap! Run away!"
+		'DEN1' : {
+			name: "Dead End",
+			description: "This is just a dead end. How boring."
 		},
 		'PUZ1' : {
 			name: "Puzzle Room",
 			description: "It's a puzzle room. Very puzzling."
 		},
-		'DEN1' : {
-			name: "Dead End",
-			description: "This is just a dead end. How boring."
+		'TRA1' : {
+			name: "Trap Room",
+			description: "It's a trap! Run away!"
 		},
 		'MON1' : {
 			name: "Monster Room",
@@ -50,6 +51,12 @@ export default {
 		'PUZ2' : {
 			name: "Another Puzzle Room",
 			description: "More puzzling than the last."
+		}
+	},
+	itemDefs: {
+		'TESTITEM' : {
+				name: "TestItem",
+				description: "a test item for testing! That's all."
 		}
 	}
 } ;

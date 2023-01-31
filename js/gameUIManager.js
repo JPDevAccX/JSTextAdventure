@@ -53,8 +53,7 @@ export default class GameUIManager {
 	showRoomStatus(currentRoom) {
 		this.setVisibilities(false, true, false) ;
 		this.els.currentRoomNameDisplay.innerText = currentRoom.name ;
-		this.els.gameOutput.innerHTML = markupToHtml(currentRoom.description) + "<br>";
-		this.els.gameOutput.innerHTML += markupToHtml(currentRoom.getExitsDescription()) ;
+		this.els.gameOutput.innerHTML = markupToHtml(currentRoom.getFullDescription()) ;
 	}
 
 	// Display win / lose results
