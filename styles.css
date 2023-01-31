@@ -64,6 +64,14 @@ body {
 	font-family: 'Roboto', sans-serif ;
 	text-align: center;
 }
+/* Styling for current room name */
+.my-current-room-name-display {
+	font-size: 120% ;
+	font-weight: bold ;
+	margin-bottom: 1em;
+	font-family: 'Roboto', sans-serif ;
+	text-align: center;
+}
 
 /* Styling for game output and input elements */
 .my-game-output {

@@ -15,6 +15,7 @@ export default {
 		gameStartButton: '#game_start',
 		gameMainContainer: '#game_main_container',
 		gameProgressStatus: '#progress_status',
+		currentRoomNameDisplay: '#current_room_name_display',
 		gameOutput: '#game_output',
 		gameInput: '#command_input',
 		gameResultsContainer: '#results_container'
