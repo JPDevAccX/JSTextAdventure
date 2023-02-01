@@ -101,7 +101,7 @@ export default class GameStateSetupRooms {
 	static addItems(roomDefs, roomsById, itemsById) {
 		for (const [roomId, room] of Object.entries(roomsById)) {
 			for (const itemId of roomDefs[roomId].contents || []) {
-				room.addItem(itemsById[itemId]) ;
+				room.contents.addItem(itemsById[itemId]) ;
 			}
 		}
 	}

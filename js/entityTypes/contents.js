@@ -1,8 +1,7 @@
 import Item from "./item.js" ;
 
-export default class Container extends Item {
-	constructor(name, description, maxItems = null) {
-		super(name, description) ;
+export default class Contents {
+	constructor(maxItems = null) {
 		this._maxItems = maxItems ; // (currently unused)
 		this._items = [] ; // No items initially
 	}
@@ -19,10 +18,10 @@ export default class Container extends Item {
 		this._items = this._items.filter(itemEntry => itemEntry !== item) ;
 	}
 
-	moveItem(item, destContainer) {
+	moveItem(item, destContents) {
 		if (!instanceCheck(item, Item)) return consoleErrAndReturnNull("Argument 1 is not an Item") ;
-		if (!instanceCheck(destContainer, Container)) return consoleErrAndReturnNull("Argument 2 is not a Container") ;
-		destContainer.addItem(item) ;
+		if (!instanceCheck(destContents, Contents)) return consoleErrAndReturnNull("Argument 2 is not a Contents") ;
+		destContents.addItem(item) ;
 		this.removeItem(item) ;
 	}
 

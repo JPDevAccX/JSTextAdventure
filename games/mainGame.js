@@ -22,7 +22,7 @@ export default {
 		'HOME' : {
 			name: "Home",
 			description: "It's home! It's where you start!",
-			contents: ['TESTITEM']
+			contents: ['TESTITEM', 'TESTCONTAINER']
 		},
 		'TRE1' : {
 			name: "Treasure Room 1",
@@ -56,7 +56,12 @@ export default {
 	itemDefs: {
 		'TESTITEM' : {
 				name: "TestItem",
-				description: "a test item for testing! That's all."
+				description: "a test item for testing! That's all.",
+		},
+		'TESTCONTAINER' : {
+				name: "TestContainer",
+				description: "a test container for testing!",
+				isContainer: true
 		}
 	}
 } ;

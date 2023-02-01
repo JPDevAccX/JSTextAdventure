@@ -1,6 +1,6 @@
 const VOWELS = ['a', 'e', 'i', 'o', 'u'] ; 
 
-export default class DescribedEntity {	
+export default class Entity {	
 	constructor(name, description, flags = '') {
 		this._name = name ;
 		this._description = description ;

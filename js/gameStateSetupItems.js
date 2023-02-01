@@ -1,5 +1,6 @@
 // Type: Module
 
+import ContainerItem from './entityTypes/containerItem.js';
 import Item from './entityTypes/item.js';
 
 export default class GameStateSetupItems {
@@ -10,8 +11,8 @@ export default class GameStateSetupItems {
 	// Create the item objects
 	static createItemObjects(itemDefs) {
 		const itemsById = {} ;
-		for (const [itemId, { name, description, weight }] of Object.entries(itemDefs)) {
-			itemsById[itemId] = new Item(name, description, weight) ;
+		for (const [itemId, { name, description, weight, isContainer }] of Object.entries(itemDefs)) {
+			itemsById[itemId] = (isContainer) ? new ContainerItem(name, description, weight) : new Item(name, description, weight) ;
 		}
 		return itemsById ;
 	}

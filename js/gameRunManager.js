@@ -72,16 +72,16 @@ export default class GameRunManager {
 			}
 			// Examine
 			else if (commandData.verb === 'examine') {
-				const matchingItem = this.gameState.player.currentRoom.retrieveItemWithName(commandData.object) ;
+				const matchingItem = this.gameState.player.currentRoom.contents.retrieveItemWithName(commandData.object) ;
 				if (matchingItem) this.outInfo("The " + matchingItem.name +" is " + matchingItem.description) ;
 				else this.outErr("I cannot see any '"+ commandData.object +"' here")
 			}
 			// Get
 			else if (commandData.verb === 'get') {
-				const matchingItem = this.gameState.player.currentRoom.retrieveItemWithName(commandData.object) ;
+				const matchingItem = this.gameState.player.currentRoom.contents.retrieveItemWithName(commandData.object) ;
 				if (matchingItem) {
 					// TODO: Any extra checks that item can actually be picked up by player
-					this.gameState.player.currentRoom.moveItem(matchingItem, this.gameState.player.inventory) ;
+					this.gameState.player.currentRoom.contents.moveItem(matchingItem, this.gameState.player.inventory) ;
 					this.outInfo("Picked up the [b]" + matchingItem.name + "[/b]") ;
 				}
 				else this.outErr("I cannot see any '"+ commandData.object +"' here")
@@ -91,7 +91,7 @@ export default class GameRunManager {
 				const matchingItem = this.gameState.player.inventory.retrieveItemWithName(commandData.object) ;
 				if (matchingItem) {
 					// TODO: Any extra checks that item can actually be dropped by player
-					this.gameState.player.inventory.moveItem(matchingItem, this.gameState.player.currentRoom) ;
+					this.gameState.player.inventory.moveItem(matchingItem, this.gameState.player.currentRoom.contents) ;
 					this.outInfo("Dropped the [b]" + matchingItem.name + "[/b]") ;
 				}
 				else this.outErr("I don't have any '"+ commandData.object +"' in my inventory")
