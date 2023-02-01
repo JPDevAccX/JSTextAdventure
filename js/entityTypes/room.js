@@ -1,12 +1,16 @@
-import Container from "./container.js"
+import Contents from "./contents.js";
+import Entity from "./entity.js";
 
 const EXITS = { 'n' : 'North', 'e' : 'East', 's' : 'South', 'w' : 'West', 'u' : 'Up', 'd' : 'Down' } ;
 
-export default class Room extends Container {
+export default class Room extends Entity {
 	constructor(roomDef) {
 		super(roomDef.name, roomDef.description) ;
 		this._linkedRooms = {} ; // No linked rooms initially
+		this._contents = new Contents() ; // No contents initially
 	}
+
+	get contents() { return this._contents ; }
 
 	linkRoom(dir, room) {
 		if (!instanceCheck(room, Room)) return consoleErrAndReturnNull("Argument 2 is not an Item") ;
@@ -28,7 +32,7 @@ export default class Room extends Container {
 	}
 
 	getContentsDescription() {
-		const contentsDesc = super.getContentsDescription() ;
+		const contentsDesc = this._contents.getContentsDescription() ;
 		return (contentsDesc) ? "There is " + contentsDesc + " here.\n" : '' ;
 	}
 
