@@ -22,7 +22,7 @@ export default {
 		'HOME' : {
 			name: "Home",
 			description: "It's home! It's where you start!",
-			contents: ['TESTITEM', 'TESTCONTAINER']
+			contents: ['TESTITEM', 'TESTCONTAINER', 'LOCKABLETESTCONTAINER', 'TESTKEY']
 		},
 		'TRE1' : {
 			name: "Treasure Room 1",
@@ -55,17 +55,27 @@ export default {
 	},
 	itemDefs: {
 		'TESTITEM' : {
-				name: "TestItem",
-				description: "a test item for testing! That's all.",
+			name: "TestItem",
+			description: "a test item for testing! That's all.",
 		},
 		'TESTITEM2' : {
-				name: "TestItem2",
-				description: "a test item in a container for testing.",
+			name: "TestItem2",
+			description: "a test item in a container for testing.",
 		},
 		'TESTCONTAINER' : {
-				name: "TestContainer",
-				description: "a test container for testing!",
-				contents: ['TESTITEM2'],
+			name: "TestContainer",
+			description: "a test container for testing!",
+			contents: ['TESTITEM2'],
+		},
+		'LOCKABLETESTCONTAINER' : {
+			name: "LockableTestContainer",
+			description: "a lockable test container for testing!",
+			contents: [],
+			lockingItem: 'TESTKEY',
+		},
+		'TESTKEY' : {
+			name: "TestKey",
+			description: "a test key (which is just another item)",
 		}
 	}
 } ;

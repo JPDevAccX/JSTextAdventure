@@ -4,21 +4,25 @@ import Entity from "./entity.js";
 export default class Character extends Entity {
 	constructor(name, description) {
 		super(name, description) ;
-		this._inventory = new Contents() ;
+		this._contents = new Contents() ; // (inventory)
 	}
 
-	get inventory() { return this._inventory ; }
-	get contents() { return this._inventory ; }
+	get inventory() { return this._contents ; } // (alias for readability outside of class)
+	get contents() { return this._contents ; }
 
 	getInventoryDescription() {
-		return this._inventory.getDescription(this) ;
+		return this._contents.getDescription(this) ;
 	}
 
 	retrieveItemWithName(name) {
-		return this._inventory.retrieveItemWithName(this, name) ;
+		return this._contents.retrieveItemWithName(this, name) ;
 	}
 
 	moveItem(item, destContents) {
-		this._inventory.moveItem(this, item, destContents) ;
+		this._contents.moveItem(this, item, destContents) ;
+	}
+
+	isItemAccessible(item) {
+		return this._contents.isItemAccessible(this, item) ;
 	}
 }

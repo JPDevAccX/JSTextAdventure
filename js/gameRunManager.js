@@ -84,7 +84,7 @@ export default class GameRunManager {
 				const { matchingItemWithContainer } = this.retrieveObject(commandData.object, true, false) ;
 				if (matchingItemWithContainer) {
 					// TODO: Any extra checks that item can actually be picked up by player
-					this.gameState.player.currentRoom.moveItem(matchingItemWithContainer.item, this.gameState.player.inventory) ; ///
+					this.gameState.player.currentRoom.moveItem(matchingItemWithContainer.item, this.gameState.player.inventory) ;
 					this.outInfo("Picked up the [b]" + matchingItemWithContainer.item.rawName + "[/b]") ;
 				}
 			}
@@ -93,7 +93,7 @@ export default class GameRunManager {
 				const { matchingItemWithContainer } = this.retrieveObject(commandData.object, false, true) ;
 				if (matchingItemWithContainer) {
 					// TODO: Any extra checks that item can actually be dropped by player
-					this.gameState.player.moveItem(matchingItemWithContainer.item, this.gameState.player.currentRoom.contents) ; ///
+					this.gameState.player.moveItem(matchingItemWithContainer.item, this.gameState.player.currentRoom.contents) ;
 					this.outInfo("Dropped the [b]" + matchingItemWithContainer.item.rawName + "[/b]") ;
 				}
 			}
@@ -103,15 +103,15 @@ export default class GameRunManager {
 				if (matchingItemWithContainer) {
 					if (matchingItemWithContainer.item.open) {
 						const result = matchingItemWithContainer.item.open() ;
-						if (result === 'already_opened') this.outErr("The " + matchingItemWithContainer.item.rawName + " is already open") ;
-						else if (result === 'locked') this.outErr("The " + matchingItemWithContainer.item.rawName + " is locked") ;
+						if (result === 'already_opened') this.outErr("The [b]" + matchingItemWithContainer.item.rawName + "[/b] is already open") ;
+						else if (result === 'locked') this.outErr("The [b]" + matchingItemWithContainer.item.rawName + "[/b] is locked") ;
 						else {
 							this.outInfo("You opened the [b]" + matchingItemWithContainer.item.rawName + "[/b]") ;
 							const contentsDescription = matchingItemWithContainer.item.getContentsDescription() ;
 							if (contentsDescription) this.outInfo("Inside you see " + contentsDescription) ;
 						}
 					}
-					else this.outErr("I can't open the " + commandData.object) ; // (not a container)
+					else this.outErr("I can't open the [b]" + matchingItemWithContainer.item.rawName + "[/b]") ; // (not a container)
 				}
 			}
 			// Close
@@ -120,10 +120,52 @@ export default class GameRunManager {
 				if (matchingItemWithContainer) {
 					if (matchingItemWithContainer.item.close) {
 						const result = matchingItemWithContainer.item.close() ;
-						if (result === 'already_closed') this.outErr("The " + matchingItemWithContainer.item.rawName + " is already closed") ;
+						if (result === 'already_closed') this.outErr("The [b]" + matchingItemWithContainer.item.rawName + "[/b] is already closed") ;
 						else this.outInfo("You closed the [b]" + matchingItemWithContainer.item.rawName + "[/b]") ;
 					}
-					else this.outErr("I can't close the " + commandData.object) ; // (not a container)
+					else this.outErr("I can't close the [b]" + matchingItemWithContainer.item.rawName + "[/b]") ; // (not a container)
+				}
+			}
+			// Unlock
+			else if (commandData.verb === 'unlock') {
+				const { matchingItemWithContainer } = this.retrieveObject(commandData.object) ;
+				if (matchingItemWithContainer) {
+					if (matchingItemWithContainer.item.unlock) {
+						const lockingItem = matchingItemWithContainer.item.lockingItem ;
+						let lockAttemptItem = null ;
+						if (lockingItem && this.gameState.player.isItemAccessible(lockingItem)) {
+							lockAttemptItem = lockingItem ;
+						}
+						const result = matchingItemWithContainer.item.unlock(lockAttemptItem) ;
+						if (result === 'no_lock') this.outErr("There is no lock on the [b]" + matchingItemWithContainer.item.rawName + "[/b]") ;
+						else if (result === 'already_unlocked') this.outErr("The [b]" + matchingItemWithContainer.item.rawName + "[/b] is already unlocked") ;
+						else if (result === 'wrong_locking_item') {
+							this.outErr("You don't have the key to the [b]" + matchingItemWithContainer.item.rawName + "[/b]") ;
+						}
+						else this.outInfo("You unlocked the [b]" + matchingItemWithContainer.item.rawName + "[/b]") ;
+					}
+					else this.outErr("There is no lock on the [b]" + matchingItemWithContainer.item.rawName + "[/b]") ; // (not a container)
+				}
+			}
+			// Lock
+			else if (commandData.verb === 'lock') {
+				const { matchingItemWithContainer } = this.retrieveObject(commandData.object) ;
+				if (matchingItemWithContainer) {
+					if (matchingItemWithContainer.item.lock) {
+						const lockingItem = matchingItemWithContainer.item.lockingItem ;
+						let lockAttemptItem = null ;
+						if (lockingItem && this.gameState.player.isItemAccessible(lockingItem)) {
+							lockAttemptItem = lockingItem ;
+						}
+						const result = matchingItemWithContainer.item.lock(lockAttemptItem) ;
+						if (result === 'no_lock') this.outErr("There is no lock on the [b]" + matchingItemWithContainer.item.rawName + "[/b]") ;
+						else if (result === 'already_locked') this.outErr("The [b]" + matchingItemWithContainer.item.rawName + "[/b] is already locked") ;
+						else if (result === 'wrong_locking_item') {
+							this.outErr("You don't have the key to the [b]" + matchingItemWithContainer.item.rawName + "[/b]") ;
+						}
+						else this.outInfo("You locked the [b]" + matchingItemWithContainer.item.rawName + "[/b]") ;
+					}
+					else this.outErr("There is no lock on the [b]" + matchingItemWithContainer.item.rawName + "[/b]") ; // (not a container)
 				}
 			}
 		}
