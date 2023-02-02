@@ -89,10 +89,12 @@ export default {
 		'TESTENEMYATTACKITEM': {
 			name: "TestEnemyAttackItem",
 			description: "a test enemy attack item",
+			attackStrength: 50
 		},
 		'TESTPLAYERATTACKITEM': {
 			name: "TestPlayerAttackItem",
 			description: "a test player attack item",
+			attackStrength: 100
 		}
 	},
 	npcDefs: {

@@ -45,7 +45,7 @@ export default class Room extends Entity {
 		return (contentsDesc) ? "There is " + contentsDesc + " here.\n" : '' ;
 	}
 
-	getNonPlayerCharactersDescriptions() {
+	getNonPlayerCharacterDescriptions() {
 		let npcsStr = '' ;
 		const npcNames = this._presentNPCs.map(npc => npc.name) ;
 		npcsStr = createEntityListDescription(npcNames, '[b]', '[/b]') ;
@@ -56,17 +56,30 @@ export default class Room extends Entity {
 		return npcsStr ;
 	}
 
-	getNonPlayerCharactersGreetingLines() {
-		const messages = this._presentNPCs.map(npc => [npc.name, npc.getRandomGreetingMessage()]).filter(entry => entry[1] !== '') ;
+	getNonPlayerCharacterGreetingLines() {
+		const messages = this._presentNPCs.map(npc => [npc.name, npc.getRandomGreetingMessage()]).filter(entry => entry[1]) ;
 		return messages.reduce((str, [name, message]) => str + "[b]" + name + "[/b] says \"[conv]" + message + "[/conv]\"\n", "") ;
+	}
+
+	getNonPlayerCharacterAttackResults() {
+		const attacks = this._presentNPCs.map(npc => [npc.name, npc.getAttack()]).filter(entry => entry[1]) ;
+		if (attacks.length === 0) return null ; // No live enemy NPCs in room
+
+		const messages = attacks.reduce((str, [name, {attackItemName, damage}]) => 
+			str + "[b]" + name + "[/b] attacks you with their [b]" + attackItemName + "[/b] (" + damage + " damage" + ")\n", "") ;
+		let totalDamage = 0 ;
+		attacks.forEach(entry => {
+			totalDamage += entry[1].damage ;
+		}) ;
+		return {messages, totalDamage} ;
 	}
 
 	getFullDescription() {
 		return this.description + "\n" + 
 			this.getExitsDescription() + "\n" +
 			this.getContentsDescription() +
-			this.getNonPlayerCharactersDescriptions() +
-			this.getNonPlayerCharactersGreetingLines() ;
+			this.getNonPlayerCharacterDescriptions() +
+			this.getNonPlayerCharacterGreetingLines() ;
 	}
 
 	retrieveItemWithName(name) {

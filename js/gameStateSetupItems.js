@@ -14,10 +14,10 @@ export default class GameStateSetupItems {
 	// Create the item objects
 	static createItemObjects(itemDefs) {
 		const itemsById = {} ;
-		for (let [itemId, { name, description, contents, isOpen, isLocked, lockingItem}] of Object.entries(itemDefs)) {
+		for (let [itemId, { name, description, attackStrength, contents, isOpen, isLocked, lockingItem}] of Object.entries(itemDefs)) {
 			if (lockingItem && isLocked === undefined) isLocked = true ; // Default to locked if a locking item was specified
 			if (isLocked && isOpen === undefined) isOpen = false ; // Default to closed if locked
-			itemsById[itemId] = (contents) ? new ContainerItem(name, description, isOpen, isLocked) : new Item(name, description) ;
+			itemsById[itemId] = (contents) ? new ContainerItem(name, description, isOpen, isLocked) : new Item(name, description, attackStrength) ;
 		}
 		return itemsById ;
 	}
