@@ -76,8 +76,15 @@ export default class GameRunManager {
 			}
 			// Examine
 			else if (commandData.verb === 'examine') {
-				const { matchingItemWithContainer } = this.retrieveObject(commandData.object) ;
-				if (matchingItemWithContainer) this.outInfo(matchingItemWithContainer.item.getFullDescription()) ;
+				let description = null ;
+				const { matchingItemWithContainer } = this.retrieveObject(commandData.object, true, true, true) ;
+				if (matchingItemWithContainer) description = matchingItemWithContainer.item.getFullDescription() ;
+				else {
+					const matchingNPC = this.gameState.player.currentRoom.retrieveNPCWithName(commandData.object) ;
+					if (matchingNPC) description = "[b]" + matchingNPC.name + "[/b] is " + matchingNPC.description ;
+				}
+				if (description) this.outInfo(description) ;
+				else this.outErr("I cannot see any '"+ commandData.object +"' here") ;
 			}
 			// Get
 			else if (commandData.verb === 'get') {
@@ -177,7 +184,7 @@ export default class GameRunManager {
 		return ['g', this.gameState] ;
 	}
 
-	retrieveObject(itemName, includeRoom = true, includeInventory = true) {
+	retrieveObject(itemName, includeRoom = true, includeInventory = true, noError = false) {
 		let matchingItemWithContainer = null ;
 		let srcLoc = null ;
 		// (order shouldn't matter here - if there are two items with the same name then it's going to be a big problem in any case)
@@ -189,8 +196,10 @@ export default class GameRunManager {
 			matchingItemWithContainer = this.gameState.player.retrieveItemWithName(itemName) ;
 			srcLoc = 'i'
 		}
-		if (!matchingItemWithContainer && includeRoom) this.outErr("I cannot see any '"+ itemName +"' here") ;
-		else if (!matchingItemWithContainer) this.outErr("I don't have any '"+ itemName +"' in my inventory")
+		if (!noError) {
+			if (!matchingItemWithContainer && includeRoom) this.outErr("I cannot see any '"+ itemName +"' here") ;
+			else if (!matchingItemWithContainer) this.outErr("I don't have any '"+ itemName +"' in my inventory")
+		}
 		return {matchingItemWithContainer, srcLoc} ;
 	}
 

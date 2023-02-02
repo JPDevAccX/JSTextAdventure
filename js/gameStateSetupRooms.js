@@ -3,12 +3,13 @@
 import Room from './entityTypes/room.js' ;
 
 export default class GameStateSetupRooms {
-	static setup(gameData, itemsById) {
+	static setup(gameData, itemsById, nonPlayerCharactersById) {
 		const noRoomId = '|'.repeat(gameData.gameMap.idLength) ; // The room id denoting an empty space
 		gameData.gameMap.data = GameStateSetupRooms.preProcessGameMapData(gameData.gameMap.data, gameData.gameMap.idLength, noRoomId) ;
 		const roomsById = GameStateSetupRooms.createRoomObjects(gameData.gameMap, gameData.roomDefs, noRoomId) ;
 		GameStateSetupRooms.linkRoomObjectsByExits(roomsById, gameData.gameMap, noRoomId) ;
 		GameStateSetupRooms.addItems(gameData.roomDefs, roomsById, itemsById) ;
+		GameStateSetupRooms.addNonPlayerCharacters(gameData.roomDefs, roomsById, nonPlayerCharactersById) ;
 		return roomsById ;
 	}
 
@@ -100,8 +101,17 @@ export default class GameStateSetupRooms {
 	// Add items to rooms
 	static addItems(roomDefs, roomsById, itemsById) {
 		for (const [roomId, room] of Object.entries(roomsById)) {
-			for (const itemId of roomDefs[roomId].contents || []) {
-				room.contents.addItem(itemsById[itemId]) ;
+			for (const globalId of roomDefs[roomId].contents || []) {
+				if (itemsById[globalId]) room.contents.addItem(itemsById[globalId]) ;
+			}
+		}
+	}
+
+	// Add NPCs to rooms
+	static addNonPlayerCharacters(roomDefs, roomsById, nonPlayerCharactersById) {
+		for (const [roomId, room] of Object.entries(roomsById)) {
+			for (const globalId of roomDefs[roomId].contents || []) {
+				if (nonPlayerCharactersById[globalId]) room.addNPC(nonPlayerCharactersById[globalId]) ;
 			}
 		}
 	}

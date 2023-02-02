@@ -22,7 +22,7 @@ export default {
 		'HOME' : {
 			name: "Home",
 			description: "It's home! It's where you start!",
-			contents: ['TESTITEM', 'TESTCONTAINER', 'LOCKABLETESTCONTAINER', 'TESTKEY']
+			contents: ['TESTITEM', 'TESTCONTAINER', 'LOCKABLETESTCONTAINER', 'TESTKEY', 'TESTNPC']
 		},
 		'TRE1' : {
 			name: "Treasure Room 1",
@@ -76,6 +76,12 @@ export default {
 		'TESTKEY' : {
 			name: "TestKey",
 			description: "a test key (which is just another item)",
+		}
+	},
+	npcDefs: {
+		'TESTNPC': {
+			name: "TestNPC",
+			description: "a test NPC for testing!",
 		}
 	}
 } ;

@@ -25,4 +25,8 @@ export default class Character extends Entity {
 	isItemAccessible(item) {
 		return this._contents.isItemAccessible(this, item) ;
 	}
+
+	get name() {
+		return this.rawName ;
+	}
 }
