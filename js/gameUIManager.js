@@ -12,12 +12,31 @@ export default class GameUIManager {
 		] ;
 		this.els = getElementsBySelector(selectors, keysToRetrieve) ;
 
-		// Add event listeners for the start-game button and command input
+		this.commandHistory = [] ;
+		this.commandHistoryIndex = 0 ;
+
+		// Add event listeners for the start-game button, command input, and command history selection
 		this.els.gameStartButton.addEventListener('click', gameStartCallback) ;
 		document.addEventListener('keydown', (e) => {
 			if (e.key === "Enter") {
 				handleCommandCallback(this.els.gameInput.value) ;
+				this.commandHistory.push(this.els.gameInput.value) ;
+				this.commandHistoryIndex = this.commandHistory.length ;
 				this.els.gameInput.value = '' ;
+			}
+			else if (e.key === "ArrowUp") {
+				if (this.commandHistoryIndex > 0) {
+					this.commandHistoryIndex-- ;
+					this.els.gameInput.value = this.commandHistory[this.commandHistoryIndex] ;
+				}
+				e.preventDefault() ;
+			}
+			else if (e.key === "ArrowDown") {
+				if (this.commandHistoryIndex < this.commandHistory.length) {
+					this.commandHistoryIndex++ ;
+					this.els.gameInput.value = this.commandHistory[this.commandHistoryIndex] || '' ;
+				}
+				e.preventDefault() ;
 			}
 		}) ;
 	}
