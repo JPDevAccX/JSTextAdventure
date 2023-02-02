@@ -8,6 +8,7 @@ export default class Room extends Entity {
 		super(roomDef.name, roomDef.description) ;
 		this._linkedRooms = {} ; // No linked rooms initially
 		this._contents = new Contents() ; // No contents initially
+		this._presentNPCs = [] ; // No NPCs initially
 	}
 
 	get contents() { return this._contents ; }
@@ -16,6 +17,14 @@ export default class Room extends Entity {
 		if (!Object.keys(EXITS).includes(dir)) return consoleErrAndReturnNull("Argument 1 is not a valid exit direction") ;
 		if (!instanceCheck(room, Room)) return consoleErrAndReturnNull("Argument 2 is not an Item") ;
 		this._linkedRooms[dir] = room ;
+	}
+
+	get presentNPCs() {
+		return this._presentNPCs ;
+	}
+
+	addNPC(npc) {
+		this._presentNPCs.push(npc) ;
 	}
 
 	getLinkedRoom(dir) {
@@ -36,8 +45,19 @@ export default class Room extends Entity {
 		return (contentsDesc) ? "There is " + contentsDesc + " here.\n" : '' ;
 	}
 
+	getNonPlayerCharactersDescriptions() {
+		let npcsStr = '' ;
+		const npcNames = this._presentNPCs.map(npc => npc.name) ;
+		npcsStr = createEntityListDescription(npcNames, '[b]', '[/b]') ;
+		if (npcsStr) {
+			if (npcNames.length === 1) npcsStr += " is here."
+			else npcsStr += " are here."
+		}
+		return npcsStr ;
+	}
+
 	getFullDescription() {
-		return this.description + "\n" + this.getExitsDescription() + "\n" + this.getContentsDescription() ;
+		return this.description + "\n" + this.getExitsDescription() + "\n" + this.getContentsDescription() + this.getNonPlayerCharactersDescriptions() ;
 	}
 
 	retrieveItemWithName(name) {
@@ -50,5 +70,11 @@ export default class Room extends Entity {
 
 	isItemAccessible(item) {
 		return this._contents.isItemAccessible(this, item) ;
+	}
+
+	retrieveNPCWithName(name) {
+		name = name.toLowerCase() ;
+		const matchingNPC = this._presentNPCs.filter(npc => npc.name.toLowerCase() === name)[0] || null ;
+		return matchingNPC ;
 	}
 }

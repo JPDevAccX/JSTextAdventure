@@ -1,6 +1,7 @@
 // Type: Module
 
 import GameStateSetupItems from "./gameStateSetupItems.js" ;
+import GameStateSetupNPCs from "./gameStateSetupNPCs.js";
 import GameStateSetupRooms from "./gameStateSetupRooms.js" ;
 
 export default class GameStateSetup {
@@ -11,8 +12,10 @@ export default class GameStateSetup {
 		gameState.startRoomId = gameData.gameMap.startRoomId ;
 		// Items
 		gameState.itemsById = GameStateSetupItems.setup(gameData) ;
+		// NPCs
+		gameState.nonPlayerCharactersById = GameStateSetupNPCs.setup(gameData) ;
 		// Rooms
-		gameState.roomsById = GameStateSetupRooms.setup(gameData, gameState.itemsById) ;
+		gameState.roomsById = GameStateSetupRooms.setup(gameData, gameState.itemsById, gameState.nonPlayerCharactersById) ;
 
 		console.log("GameStateSetup() : Initial game state:", gameState) ;
 
