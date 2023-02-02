@@ -175,6 +175,17 @@ export default class GameRunManager {
 					else this.outErr("There is no lock on the [b]" + matchingItemWithContainer.item.rawName + "[/b]") ; // (not a container)
 				}
 			}
+
+			// Post-turn events (for commands that take a turn)
+			if (!['examine'].includes(commandData.verb)) {
+				// Enemy attacks
+				const attackData = this.gameState.player.currentRoom.getNonPlayerCharacterAttackResults() ;
+				if (attackData) {
+					this.outWarning(attackData.messages) ;
+					const isAlive = this.gameState.player.changeHealthBy(-attackData.totalDamage) ;
+					if (!isAlive) this.outInfo("[[[You died]]]") ;
+				}
+			}
 		}
 		else {
 			this.outErr('Unknown command "'+ command + '"') ;
@@ -211,5 +222,8 @@ export default class GameRunManager {
 	}
 	outErr(msg) {
 		this.gameState.outputBuffer.add('> [err]' + msg + '[/err]') ;
+	}
+	outWarning(msg) {
+		this.gameState.outputBuffer.add('> [warn]' + msg + '[/warn]') ;
 	}
 }

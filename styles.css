@@ -114,6 +114,9 @@ body {
 .my-err {
 	color: red ;
 }
+.my-warn {
+	color: orangered ;
+}
 .my-conv {
 	color: #22ff22; 
 }
