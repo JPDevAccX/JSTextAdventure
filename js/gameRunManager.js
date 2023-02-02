@@ -47,7 +47,11 @@ export default class GameRunManager {
 		if (commandData.commandType === 'COM') {
 			// Inventory
 			if (commandData.command === 'inventory') {
-				this.outInfo("You are carrying " + (this.gameState.player.inventory.getContentsDescription() || 'nothing')) ;
+				this.outInfo("You are carrying " + (this.gameState.player.getInventoryDescription() || 'nothing')) ;
+			}
+			// Look
+			else if (commandData.command === 'look') {
+				this.outInfo(this.gameState.player.currentRoom.getFullDescription()) ;
 			}
 		}
 		// Basic verb-noun commands
@@ -64,7 +68,7 @@ export default class GameRunManager {
 					}
 					else {
 						this.outErr('You cannot go in that direction') ;
-					} 
+					}
 				}
 				else {
 					this.outErr('Unknown direction') ;
@@ -72,29 +76,55 @@ export default class GameRunManager {
 			}
 			// Examine
 			else if (commandData.verb === 'examine') {
-				const matchingItem = this.gameState.player.currentRoom.contents.retrieveItemWithName(commandData.object) ;
-				if (matchingItem) this.outInfo("The " + matchingItem.name +" is " + matchingItem.description) ;
-				else this.outErr("I cannot see any '"+ commandData.object +"' here")
+				const { matchingItemWithContainer } = this.retrieveObject(commandData.object) ;
+				if (matchingItemWithContainer) this.outInfo(matchingItemWithContainer.item.getFullDescription()) ;
 			}
 			// Get
 			else if (commandData.verb === 'get') {
-				const matchingItem = this.gameState.player.currentRoom.contents.retrieveItemWithName(commandData.object) ;
-				if (matchingItem) {
+				const { matchingItemWithContainer } = this.retrieveObject(commandData.object, true, false) ;
+				if (matchingItemWithContainer) {
 					// TODO: Any extra checks that item can actually be picked up by player
-					this.gameState.player.currentRoom.contents.moveItem(matchingItem, this.gameState.player.inventory) ;
-					this.outInfo("Picked up the [b]" + matchingItem.name + "[/b]") ;
+					this.gameState.player.currentRoom.moveItem(matchingItemWithContainer.item, this.gameState.player.inventory) ; ///
+					this.outInfo("Picked up the [b]" + matchingItemWithContainer.item.rawName + "[/b]") ;
 				}
-				else this.outErr("I cannot see any '"+ commandData.object +"' here")
 			}
 			// Drop
 			else if (commandData.verb === 'drop') {
-				const matchingItem = this.gameState.player.inventory.retrieveItemWithName(commandData.object) ;
-				if (matchingItem) {
+				const { matchingItemWithContainer } = this.retrieveObject(commandData.object, false, true) ;
+				if (matchingItemWithContainer) {
 					// TODO: Any extra checks that item can actually be dropped by player
-					this.gameState.player.inventory.moveItem(matchingItem, this.gameState.player.currentRoom.contents) ;
-					this.outInfo("Dropped the [b]" + matchingItem.name + "[/b]") ;
+					this.gameState.player.moveItem(matchingItemWithContainer.item, this.gameState.player.currentRoom.contents) ; ///
+					this.outInfo("Dropped the [b]" + matchingItemWithContainer.item.rawName + "[/b]") ;
 				}
-				else this.outErr("I don't have any '"+ commandData.object +"' in my inventory")
+			}
+			// Open
+			else if (commandData.verb === 'open') {
+				const { matchingItemWithContainer } = this.retrieveObject(commandData.object) ;
+				if (matchingItemWithContainer) {
+					if (matchingItemWithContainer.item.open) {
+						const result = matchingItemWithContainer.item.open() ;
+						if (result === 'already_opened') this.outErr("The " + matchingItemWithContainer.item.rawName + " is already open") ;
+						else if (result === 'locked') this.outErr("The " + matchingItemWithContainer.item.rawName + " is locked") ;
+						else {
+							this.outInfo("You opened the [b]" + matchingItemWithContainer.item.rawName + "[/b]") ;
+							const contentsDescription = matchingItemWithContainer.item.getContentsDescription() ;
+							if (contentsDescription) this.outInfo("Inside you see " + contentsDescription) ;
+						}
+					}
+					else this.outErr("I can't open the " + commandData.object) ; // (not a container)
+				}
+			}
+			// Close
+			else if (commandData.verb === 'close') {
+				const { matchingItemWithContainer } = this.retrieveObject(commandData.object) ;
+				if (matchingItemWithContainer) {
+					if (matchingItemWithContainer.item.close) {
+						const result = matchingItemWithContainer.item.close() ;
+						if (result === 'already_closed') this.outErr("The " + matchingItemWithContainer.item.rawName + " is already closed") ;
+						else this.outInfo("You closed the [b]" + matchingItemWithContainer.item.rawName + "[/b]") ;
+					}
+					else this.outErr("I can't close the " + commandData.object) ; // (not a container)
+				}
 			}
 		}
 		else {
@@ -103,6 +133,23 @@ export default class GameRunManager {
 
 		// Return current game state
 		return ['g', this.gameState] ;
+	}
+
+	retrieveObject(itemName, includeRoom = true, includeInventory = true) {
+		let matchingItemWithContainer = null ;
+		let srcLoc = null ;
+		// (order shouldn't matter here - if there are two items with the same name then it's going to be a big problem in any case)
+		if (includeRoom) {
+			matchingItemWithContainer = this.gameState.player.currentRoom.retrieveItemWithName(itemName) ;
+			srcLoc = 'r' ;
+		}
+		if (!matchingItemWithContainer && includeInventory) {
+			matchingItemWithContainer = this.gameState.player.retrieveItemWithName(itemName) ;
+			srcLoc = 'i'
+		}
+		if (!matchingItemWithContainer && includeRoom) this.outErr("I cannot see any '"+ itemName +"' here") ;
+		else if (!matchingItemWithContainer) this.outErr("I don't have any '"+ itemName +"' in my inventory")
+		return {matchingItemWithContainer, srcLoc} ;
 	}
 
 	outCommand(msg) {

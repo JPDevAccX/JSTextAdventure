@@ -32,11 +32,19 @@ export default class Room extends Entity {
 	}
 
 	getContentsDescription() {
-		const contentsDesc = this._contents.getContentsDescription() ;
+		const contentsDesc = this._contents.getDescription(this) ;
 		return (contentsDesc) ? "There is " + contentsDesc + " here.\n" : '' ;
 	}
 
 	getFullDescription() {
 		return this.description + "\n" + this.getExitsDescription() + "\n" + this.getContentsDescription() ;
+	}
+
+	retrieveItemWithName(name) {
+		return this._contents.retrieveItemWithName(this, name) ;
+	}
+
+	moveItem(item, destContents) {
+		this._contents.moveItem(this, item, destContents) ;
 	}
 }

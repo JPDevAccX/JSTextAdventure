@@ -58,10 +58,14 @@ export default {
 				name: "TestItem",
 				description: "a test item for testing! That's all.",
 		},
+		'TESTITEM2' : {
+				name: "TestItem2",
+				description: "a test item in a container for testing.",
+		},
 		'TESTCONTAINER' : {
 				name: "TestContainer",
 				description: "a test container for testing!",
-				isContainer: true
+				contents: ['TESTITEM2'],
 		}
 	}
 } ;

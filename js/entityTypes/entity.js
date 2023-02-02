@@ -14,10 +14,14 @@ export default class Entity {
 		else if (flags.includes('an')) this.indefArticle = 'an' ;
 		else this.indefArticle = '' ;
 	}
-	get name() { return this._name ; }
+	get rawName() { return this._name ; }
 	get description() { return this._description ; }
 
 	getCompleteNameIdentifier(namePrependStr = '', nameAppendStr = '') {
 		return this.indefArticle + ' ' + namePrependStr + this._name + nameAppendStr ; 
+	}
+
+	getFullDescription() {
+		return "The [b]" + this._name +"[/b] is " + this._description ;
 	}
 }

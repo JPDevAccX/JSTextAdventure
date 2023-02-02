@@ -52,7 +52,7 @@ export default class GameUIManager {
 
 	showRoomStatus(currentRoom, outputBuffer) {
 		this.setVisibilities(false, true, false) ;
-		this.els.currentRoomNameDisplay.innerText = currentRoom.name ;
+		this.els.currentRoomNameDisplay.innerText = currentRoom.rawName ;
 		this.els.gameOutput.innerHTML = outputBuffer.getProcessedBufferText((entry) => markupToHtml(entry) + "<br>") ;
 		this.els.gameOutput.scrollTo(0, 1000) ; // Scroll down to bottom
 	}
