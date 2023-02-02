@@ -13,7 +13,7 @@ export default class GameStateSetup {
 		// Items
 		gameState.itemsById = GameStateSetupItems.setup(gameData) ;
 		// NPCs
-		gameState.nonPlayerCharactersById = GameStateSetupNPCs.setup(gameData) ;
+		gameState.nonPlayerCharactersById = GameStateSetupNPCs.setup(gameData, gameState.itemsById) ;
 		// Rooms
 		gameState.roomsById = GameStateSetupRooms.setup(gameData, gameState.itemsById, gameState.nonPlayerCharactersById) ;
 

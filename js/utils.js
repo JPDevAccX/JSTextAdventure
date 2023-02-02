@@ -16,7 +16,8 @@ function markupToHtml(markup) {
 		'[li]' : '<li>', '[/li]' : '</li>',
 		'[ul]' : '<ul>', '[/ul]' : '</ul>',
 		'[b]' : '<b>', '[/b]' : '</b>',
-		'[err]' : '<span class="my-err">', '[/err]' : '</span>'
+		'[err]' : '<span class="my-err">', '[/err]' : '</span>',
+		'[conv]' : '<span class="my-conv">', '[/conv]' : '</span>'
 	}
 	for (const [from, to] of Object.entries(replaceTable)) {
 		markup = markup.replaceAll(from, to) ;
@@ -72,4 +73,9 @@ function createEntityListDescription(entityList, entityPrependStr = '', entityAp
 		else if (entityList.length >= 3 && i < entityList.length - 1) listStr += ', and ' ;
 	}
 	return listStr ;
+}
+
+// Generate a random integer between 0 and n-1 inclusive with even probability distribution
+function randomInt(n) {
+	return Math.floor(Math.random() * n) ;
 }
