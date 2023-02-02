@@ -4,12 +4,13 @@ export default class CommandParser {
 		this.subs = {
 		...{ // Merge in default substitutions...
 			'(^| )look at ': ' examine ',
-			'(^| )look ': ' examine ',
 			'(^| )ex ': ' examine ',
+			'(^| )pick up ' : ' get ',
+			'(^| )retrieve ' : ' get ',
+			'(^| )shut ' : ' close ',
 			'^i$': 'inventory',
 			'^inv$': 'inventory',
-			'(^| )pick up ' : ' get ',
-			'(^| )retrieve ' : ' get '
+			'^l$': ' look ',
 		},
 		...CommandParser.getDirectionSubs(), // ...with directional subs...
 		...subs //...and with custom subs
@@ -17,13 +18,13 @@ export default class CommandParser {
 
 		this.verbs = [
 		...[  // Merge in default verbs...
-			'go', 'examine', 'get', 'drop'
+			'go', 'examine', 'get', 'drop', 'open', 'close'
 		],
 			...verbs // ...with custom verbs
 		] ;
 
 		this.basicCommands = [
-			'inventory'
+			'inventory', 'look'
 		]
 
 		// Compile the substitution 'from' regexps ahead of time
