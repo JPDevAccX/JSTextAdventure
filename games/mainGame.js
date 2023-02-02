@@ -46,7 +46,8 @@ export default {
 		},
 		'CRO1' : {
 			name: "Crossroads",
-			description: "Which way? East or West?"
+			description: "Which way? East or West?",
+			contents: ['TESTENEMYNPC']
 		},
 		'PUZ2' : {
 			name: "Another Puzzle Room",
@@ -76,12 +77,40 @@ export default {
 		'TESTKEY' : {
 			name: "TestKey",
 			description: "a test key (which is just another item)",
+		},
+		'TESTUSEFULITEM1': {
+			name: "TestUsefulItem1",
+			description: "a test useful item (1)",
+		},
+		'TESTUSEFULITEM2': {
+			name: "TestUsefulItem2",
+			description: "a test useful item (2)",
+		},
+		'TESTENEMYATTACKITEM': {
+			name: "TestEnemyAttackItem",
+			description: "a test enemy attack item",
+		},
+		'TESTPLAYERATTACKITEM': {
+			name: "TestPlayerAttackItem",
+			description: "a test player attack item",
 		}
 	},
 	npcDefs: {
 		'TESTNPC': {
 			name: "TestNPC",
-			description: "a test NPC for testing!",
+			description: "a friendly test NPC for testing!",
+			greetingMessages: ["Test greeting message (1)!", "Test greeting message (2)!"],
+			inventory: ["TESTUSEFULITEM1"],
+			tradeInventoryForItemList: ["TESTUSEFULITEM2"]
+			
+		},
+		'TESTENEMYNPC': {
+			name: "TestEnemyNPC",
+			description: "an enemy test NPC for testing!",
+			greetingMessages: ["Angry test greeting message (1)!", "Angry test greeting message (2)!"],
+			inventory: ["TESTENEMYATTACKITEM"],
+			attackItem: "TESTENEMYATTACKITEM",
+			vulnerabiltyItemList: ["TESTPLAYERATTACKITEM"]
 		}
 	}
 } ;

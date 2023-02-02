@@ -50,14 +50,23 @@ export default class Room extends Entity {
 		const npcNames = this._presentNPCs.map(npc => npc.name) ;
 		npcsStr = createEntityListDescription(npcNames, '[b]', '[/b]') ;
 		if (npcsStr) {
-			if (npcNames.length === 1) npcsStr += " is here."
-			else npcsStr += " are here."
+			if (npcNames.length === 1) npcsStr += " is here.\n"
+			else npcsStr += " are here.\n"
 		}
 		return npcsStr ;
 	}
 
+	getNonPlayerCharactersGreetingLines() {
+		const messages = this._presentNPCs.map(npc => [npc.name, npc.getRandomGreetingMessage()]).filter(entry => entry[1] !== '') ;
+		return messages.reduce((str, [name, message]) => str + "[b]" + name + "[/b] says \"[conv]" + message + "[/conv]\"\n", "") ;
+	}
+
 	getFullDescription() {
-		return this.description + "\n" + this.getExitsDescription() + "\n" + this.getContentsDescription() + this.getNonPlayerCharactersDescriptions() ;
+		return this.description + "\n" + 
+			this.getExitsDescription() + "\n" +
+			this.getContentsDescription() +
+			this.getNonPlayerCharactersDescriptions() +
+			this.getNonPlayerCharactersGreetingLines() ;
 	}
 
 	retrieveItemWithName(name) {
