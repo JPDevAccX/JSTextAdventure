@@ -81,6 +81,13 @@ export default class Contents {
 		return containerNameAndItemList ;
 	}
 
+	isItemAccessible(rootObj, item, recurse = true) {
+		const accessibleItems = this.getAccessibleItems(rootObj, recurse) ;
+		const itemsOnly = accessibleItems.map(entry => entry.item) ;
+		console.log("isItemAccessible", {itemsOnly, item} )
+		return (itemsOnly.includes(item)) ;
+	}
+
 	getDescription(rootObj, recurse = true) {
 		const accessibleItems = this.getAccessibleItems(rootObj, recurse) ;
 		const itemsOnly = accessibleItems.map(entry => entry.item) ;

@@ -2,7 +2,7 @@ import Contents from "./contents.js";
 import Item from "./item.js" ;
 
 export default class ContainerItem extends Item {
-	constructor(name, description, weight = null, maxItems = null, isOpen = false, isLocked = false) {
+	constructor(name, description, isOpen = false, isLocked = false, weight = null, maxItems = null) {
 		super(name, description, weight) ;
 		this._contents = new Contents(maxItems) ; // No contents initially
 		this._isOpen = isOpen ;
@@ -12,28 +12,45 @@ export default class ContainerItem extends Item {
 
 	get contents() { return this._contents ; }
 
-	get isOpen() { return this._isOpen ; }
+	get lockingItem() { return this._lockingItem ; }
 
-	setLockingItem(item) {
+	set lockingItem(item) {
 		if (!instanceCheck(item, Item)) return consoleErrAndReturnNull("Argument 1 is not an Item") ;
 		this._lockingItem = item ;
 	}
 
+	get isOpen() { return this._isOpen ; }
+
 	open() {
 		if (this._isOpen) return "already_opened" ;
 		else if (this._isLocked) return "locked" ;
-		else {
-			this._isOpen = true ;
-			return "ok" ;
-		}
+
+		this._isOpen = true ;
+		return "ok" ;
 	}
 
 	close() {
 		if (!this._isOpen) return "already_closed" ;
-		else {
-			this._isOpen = false ; // (allow closing of locked containers)
-			return "ok" ;
-		}
+
+		this._isOpen = false ; // (allow closing of locked containers)
+		return "ok" ;
+	}
+
+	unlock(withItem = null) {
+		if (!this._lockingItem) return "no_lock" ;
+		if (!this._isLocked) return "already_unlocked" ;
+		else if (withItem !== this._lockingItem) return "wrong_locking_item" ;
+		
+		this._isLocked = false ;
+		return "ok" ;
+	}
+
+	lock(withItem = null) {
+		if (!this._lockingItem) return "no_lock" ;
+		if (this._isLocked) return "already_locked" ;
+		else if (withItem !== this._lockingItem) return "wrong_locking_item" ;
+		this._isLocked = true ;
+		return "ok" ;
 	}
 
 	getContentsDescription() {

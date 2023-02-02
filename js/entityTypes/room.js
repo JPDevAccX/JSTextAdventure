@@ -13,8 +13,8 @@ export default class Room extends Entity {
 	get contents() { return this._contents ; }
 
 	linkRoom(dir, room) {
-		if (!instanceCheck(room, Room)) return consoleErrAndReturnNull("Argument 2 is not an Item") ;
 		if (!Object.keys(EXITS).includes(dir)) return consoleErrAndReturnNull("Argument 1 is not a valid exit direction") ;
+		if (!instanceCheck(room, Room)) return consoleErrAndReturnNull("Argument 2 is not an Item") ;
 		this._linkedRooms[dir] = room ;
 	}
 
@@ -46,5 +46,9 @@ export default class Room extends Entity {
 
 	moveItem(item, destContents) {
 		this._contents.moveItem(this, item, destContents) ;
+	}
+
+	isItemAccessible(item) {
+		return this._contents.isItemAccessible(this, item) ;
 	}
 }

@@ -18,7 +18,7 @@ export default class CommandParser {
 
 		this.verbs = [
 		...[  // Merge in default verbs...
-			'go', 'examine', 'get', 'drop', 'open', 'close'
+			'go', 'examine', 'get', 'drop', 'open', 'close', 'unlock', 'lock'
 		],
 			...verbs // ...with custom verbs
 		] ;
