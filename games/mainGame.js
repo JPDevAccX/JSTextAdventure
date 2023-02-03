@@ -143,11 +143,13 @@ export default {
 		},
 		'REDPAINT': {
 			name: "red-paint",
+			namingFlags: 'p',
 			description: "a bucket of red paint - there are a lot of buckets in this game",
 			attackStrength: 100
 		},
 		'BLUEPAINT': {
 			name: "blue-paint",
+			namingFlags: 'p',
 			description: "a bucket of blue paint - there are many buckets around here for some reason",
 			attackStrength: 100
 		},

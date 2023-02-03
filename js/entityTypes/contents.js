@@ -43,6 +43,8 @@ export default class Contents {
 	}
 
 	getContainerForAccessibleItem(rootObj, searchItem, recurse = true) {
+		if (!rootObj.contents) return consoleErrAndReturnNull("Argument 1 does not have a Contents") ;
+		if (!instanceCheck(searchItem, Item)) return consoleErrAndReturnNull("Argument 2 is not an Item") ;
 		const accessibleItems = this.getAccessibleItems(rootObj, recurse) ;
 		const matchingItemWithContainer = accessibleItems.filter(({item}) => item === searchItem)[0] ;
 		if (!matchingItemWithContainer) return consoleErrAndReturnNull("Item does not exist in container or is not accessible") ;
@@ -50,7 +52,8 @@ export default class Contents {
 	}
 
 	retrieveItemWithName(rootObj, name, recurse = true) {
-		if ((typeof name) !== 'string') return consoleErrAndReturnNull("Argument 1 is not a string") ;
+		if (!rootObj.contents) return consoleErrAndReturnNull("Argument 1 does not have a Contents") ;
+		if ((typeof name) !== 'string') return consoleErrAndReturnNull("Argument 2 is not a string") ;
 
 		const accessibleItems = this.getAccessibleItems(rootObj, recurse) ;
 		
@@ -62,6 +65,7 @@ export default class Contents {
 	}
 
 	getAccessibleItems(rootObj, recurse = true) {
+		if (!rootObj.contents) return consoleErrAndReturnNull("Argument 1 does not have a Contents") ;
 		let accessibleItems = [] ;
 		// (if the root object is openable then it must be open to access the items inside)
 		if (rootObj.isOpen === undefined || rootObj.isOpen) {
@@ -91,12 +95,15 @@ export default class Contents {
 	}
 
 	isItemAccessible(rootObj, item, recurse = true) {
+		if (!rootObj.contents) return consoleErrAndReturnNull("Argument 1 does not have a Contents") ;
+		if (!instanceCheck(item, Item)) return consoleErrAndReturnNull("Argument 2 is not an Item") ;
 		const accessibleItems = this.getAccessibleItems(rootObj, recurse) ;
 		const itemsOnly = accessibleItems.map(entry => entry.item) ;
 		return (itemsOnly.includes(item)) ;
 	}
 
 	getDescription(rootObj, recurse = true) {
+		if (!rootObj.contents) return consoleErrAndReturnNull("Argument 1 does not have a Contents") ;
 		const accessibleItems = this.getAccessibleItems(rootObj, recurse) ;
 		const itemsOnly = accessibleItems.map(entry => entry.item) ;
 		const itemNames = itemsOnly.map(item => item.getCompleteNameIdentifier()) ;

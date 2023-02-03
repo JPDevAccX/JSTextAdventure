@@ -66,6 +66,11 @@ function instanceCheck(arg, type) {
 	return (arg instanceof type) ;
 }
 
+// Check arg is instance of type or null
+function instanceOrNullCheck(arg, type) {
+	return (arg instanceof type) || null ;
+}
+
 // Create a natural-language string describing a list of entities
 function createEntityListDescription(entityList, entityPrependStr = '', entityAppendStr = '') {
 	let listStr = '' ;

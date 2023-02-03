@@ -3,8 +3,8 @@ export default class CommandParser {
 	constructor(subs = {}, verbs = []) {
 		this.subs = {
 		...{ // Merge in default substitutions...
-			'(^| )look at ': ' examine ',
-			'(^| )ex ': ' examine ',
+			'(^| )look at ' : ' examine ',
+			'(^| )ex ' : ' examine ',
 			'(^| )pick up ' : ' get ',
 			'(^| )retrieve ' : ' get ',
 			'(^| )shut ' : ' close ',
@@ -14,9 +14,10 @@ export default class CommandParser {
 			'(^| )eat ' : ' consume ', /* TODO: Could differentiate these in the future - for now just aliases */
 			'(^| )drink ' : ' consume ', /* TODO: Could differentiate these in the future - for now just aliases */
 			'(^| )offer ' : ' give ',
-			'^i$': 'inventory',
-			'^inv$': 'inventory',
-			'^l$': ' look ',
+			'^i$' : 'inventory',
+			'^inv$' : 'inventory',
+			'^l$' : ' look ',
+			'^\\?$': 'help'
 		},
 		...CommandParser.getDirectionSubs(), // ...with directional subs...
 		...subs //...and with custom subs
@@ -30,7 +31,7 @@ export default class CommandParser {
 		] ;
 
 		this.basicCommands = [
-			'inventory', 'look'
+			'help', 'inventory', 'look'
 		]
 
 		// Compile the substitution 'from' regexps ahead of time
@@ -57,7 +58,7 @@ export default class CommandParser {
 	}
 
 	parseCommand(command) {
-		command = command.toLowerCase() ;
+		command = command.trim().toLowerCase() ;
 
 		// Do substitutions
 		for (const [subFrom, subTo] of Object.entries(this.subs)) {
@@ -94,5 +95,9 @@ export default class CommandParser {
 		}
 
 		return parseData ;
+	}
+
+	getCommands() {
+		return [...this.basicCommands, ...this.verbs, ] ;
 	}
 }

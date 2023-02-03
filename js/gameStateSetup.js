@@ -18,8 +18,6 @@ export default class GameStateSetup {
 		gameState.startRoomId = gameData.gameMap.startRoomId ;
 		gameState.winCondition = { goalRoom: gameState.roomsById[gameData.winCondition.targetId] } ;
 
-		// console.log("GameStateSetup() : Initial game state:", gameState) ;
-
 		return gameState ;
 	}
 }

@@ -37,6 +37,7 @@ export default class ContainerItem extends Item {
 	}
 
 	unlock(withItem = null) {
+		if (!instanceOrNullCheck(withItem, Item)) return consoleErrAndReturnNull("Argument 1 is not an Item") ;
 		if (!this._lockingItem) return "no_lock" ;
 		if (!this._isLocked) return "already_unlocked" ;
 		else if (withItem !== this._lockingItem) return "wrong_locking_item" ;
@@ -46,6 +47,7 @@ export default class ContainerItem extends Item {
 	}
 
 	lock(withItem = null) {
+		if (!instanceOrNullCheck(withItem, Item)) return consoleErrAndReturnNull("Argument 1 is not an Item") ;
 		if (!this._lockingItem) return "no_lock" ;
 		if (this._isLocked) return "already_locked" ;
 		else if (withItem !== this._lockingItem) return "wrong_locking_item" ;

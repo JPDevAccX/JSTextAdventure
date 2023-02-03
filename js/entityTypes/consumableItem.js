@@ -12,7 +12,9 @@ export default class ConsumableItem extends Item {
 	get health() { return this._health ; }
 	get weight() { return this._weight ; }
 
-	eat(contentsContainer, player) {
+	// Consume this item, given the contents object it is in (so it can be removed) and the player object (so player health can be modified)
+	// Returns object with properties for whether player is still alive, and also the change in health 
+	consume(contentsContainer, player) {
 		if (!instanceCheck(contentsContainer, Contents)) return consoleErrAndReturnNull("Argument 1 is not a Contents") ;
 		if (!instanceCheck(player, Player)) return consoleErrAndReturnNull("Argument 2 is not a Player") ;
 		contentsContainer.removeItem(this) ;
