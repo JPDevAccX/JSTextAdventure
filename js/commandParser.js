@@ -11,6 +11,8 @@ export default class CommandParser {
 			' using ' : ' with ',
 			' using the ' : ' with ',
 			' with the ' : ' with ',
+			'(^| )eat ' : ' consume ', /* TODO: Could differentiate these in the future - for now just aliases */
+			'(^| )drink ' : ' consume ', /* TODO: Could differentiate these in the future - for now just aliases */
 			'^i$': 'inventory',
 			'^inv$': 'inventory',
 			'^l$': ' look ',
@@ -21,7 +23,7 @@ export default class CommandParser {
 
 		this.verbs = [
 		...[  // Merge in default verbs...
-			'go', 'examine', 'get', 'drop', 'open', 'close', 'unlock', 'lock', 'attack'
+			'go', 'examine', 'get', 'drop', 'open', 'close', 'unlock', 'lock', 'attack', 'consume'
 		],
 			...verbs // ...with custom verbs
 		] ;

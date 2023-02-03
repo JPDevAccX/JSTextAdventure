@@ -22,7 +22,10 @@ export default {
 		'HOME' : {
 			name: "Home",
 			description: "It's home! It's where you start!",
-			contents: ['TESTITEM', 'TESTCONTAINER', 'LOCKABLETESTCONTAINER', 'TESTKEY', 'TESTNPC', 'TESTPLAYERATTACKITEM', 'TESTPLAYERATTACKITEM2']
+			contents: [
+				'TESTITEM', 'TESTCONTAINER', 'LOCKABLETESTCONTAINER', 'TESTKEY', 'TESTNPC', 
+				'TESTPLAYERATTACKITEM', 'TESTPLAYERATTACKITEM2','TESTCONSUMABLEITEM1','TESTCONSUMABLEITEM2'
+			]
 		},
 		'TRE1' : {
 			name: "Treasure Room 1",
@@ -100,6 +103,16 @@ export default {
 			name: "TestPlayerAttackItem2",
 			description: "a test player attack item (2)",
 			attackStrength: 100
+		},
+		'TESTCONSUMABLEITEM1': {
+			name: "TestConsumableItem1",
+			description: "a test consumable item (1)",
+			health: 10
+		},
+		'TESTCONSUMABLEITEM2': {
+			name: "TestConsumableItem2",
+			description: "a test consumable item (2)",
+			health: -100
 		}
 	},
 	npcDefs: {
