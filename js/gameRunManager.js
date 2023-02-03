@@ -54,7 +54,7 @@ export default class GameRunManager {
 				this.outInfo(this.gameState.player.currentRoom.getFullDescription()) ;
 			}
 		}
-		// Basic verb-noun commands
+		// Verb-noun commands
 		else if (commandData.commandType === 'VN') {
 			// Travel
 			if (commandData.verb === 'go') {
@@ -174,6 +174,27 @@ export default class GameRunManager {
 					}
 					else this.outErr("There is no lock on the [b]" + matchingItemWithContainer.item.rawName + "[/b]") ; // (not a container)
 				}
+			}
+			// Attack
+			else if (commandData.verb === 'attack') {
+				const matchingNPC = this.gameState.player.currentRoom.retrieveNPCWithName(commandData.object) ;
+				if (matchingNPC) {
+					if (!commandData.withObject) this.outErr("With what? Thin air?") ;
+					else {
+						const { matchingItemWithContainer } = this.retrieveObject(commandData.withObject, false, true) ;
+						if (matchingItemWithContainer) {
+							const {statusResult, message} = matchingNPC.receiveAttackFromItem(matchingItemWithContainer.item) ;
+							this.outInfo(message) ;
+							// NPCs drop inventory when killed
+							if (statusResult === 'killed') {
+								const npcInventoryDescription = matchingNPC.getInventoryDescription() ;
+								this.outInfo(matchingNPC.name + " " + "dropped the following items: " + npcInventoryDescription) ;
+								matchingNPC.moveAllItems(this.gameState.player.currentRoom.contents) ;
+							}
+						}
+					}
+				}
+				else this.outErr("I cannot see '"+ commandData.object +"' here") ;
 			}
 
 			// Post-turn events (for commands that take a turn)

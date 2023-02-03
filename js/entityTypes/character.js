@@ -29,6 +29,10 @@ export default class Character extends Entity {
 		this._contents.moveItem(this, item, destContents) ;
 	}
 
+	moveAllItems(destContents) {
+		this._contents.moveAllItems(this, destContents) ;
+	}
+
 	isItemAccessible(item) {
 		return this._contents.isItemAccessible(this, item) ;
 	}
