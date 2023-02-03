@@ -46,8 +46,12 @@ export default class GameRunManager {
 
 		// Basic commands
 		if (commandData.commandType === 'COM') {
+			// Help
+ 			if (commandData.command === 'help') {
+				this.outInfo("Commands: " + this.commandParser.getCommands().join(' ')) ;
+			}
 			// Inventory
-			if (commandData.command === 'inventory') {
+			else if (commandData.command === 'inventory') {
 				this.outInfo("You are carrying " + (this.gameState.player.getInventoryDescription() || 'nothing')) ;
 			}
 			// Look
@@ -211,8 +215,8 @@ export default class GameRunManager {
 			else if (commandData.verb === 'consume') {
 				const { matchingItemWithContainer } = this.retrieveObject(commandData.object, false, true) ;
 				if (matchingItemWithContainer) {
-					if (matchingItemWithContainer.item.eat) {
-						const {isPlayerAlive, healthChange} = matchingItemWithContainer.item.eat(matchingItemWithContainer.container.contents, this.gameState.player) ;
+					if (matchingItemWithContainer.item.consume) {
+						const {isPlayerAlive, healthChange} = matchingItemWithContainer.item.consume(matchingItemWithContainer.container.contents, this.gameState.player) ;
 						if (healthChange === 0) this.outInfo("Hmm, Tasty!...but you don't feel any different.") ;
 						else if (healthChange < 0) this.outWarning("Oooooh. You don't feel well after consuming that!") ;
 						else if (healthChange > 0) this.outInfo("Wow! That hit the spot! You feel much better!") ;

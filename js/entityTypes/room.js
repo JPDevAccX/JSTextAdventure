@@ -1,5 +1,7 @@
 import Contents from "./contents.js";
 import Entity from "./entity.js";
+import Item from "./item.js";
+import NonPlayerCharacter from "./npc.js";
 
 const EXITS = { 'n' : 'North', 'e' : 'East', 's' : 'South', 'w' : 'West', 'u' : 'Up', 'd' : 'Down' } ;
 
@@ -15,7 +17,7 @@ export default class Room extends Entity {
 
 	linkRoom(dir, room) {
 		if (!Object.keys(EXITS).includes(dir)) return consoleErrAndReturnNull("Argument 1 is not a valid exit direction") ;
-		if (!instanceCheck(room, Room)) return consoleErrAndReturnNull("Argument 2 is not an Item") ;
+		if (!instanceCheck(room, Room)) return consoleErrAndReturnNull("Argument 2 is not a Room") ;
 		this._linkedRooms[dir] = room ;
 	}
 
@@ -24,13 +26,15 @@ export default class Room extends Entity {
 	}
 
 	addNPC(npc) {
+		if (!instanceCheck(npc, NonPlayerCharacter)) return consoleErrAndReturnNull("Argument 1 is not an NPC") ;
 		this._presentNPCs.push(npc) ;
 	}
 
 	getLinkedRoom(dir) {
+		if (!Object.keys(EXITS).includes(dir)) return consoleErrAndReturnNull("Argument 1 is not a valid exit direction") ;
 		return this._linkedRooms[dir] ;
 	}
-
+1
 	getExitsDescription() {
 		const exitNames = Object.keys(this._linkedRooms).map(dir => EXITS[dir]) ;
 		const exitsStr = createEntityListDescription(exitNames, '[b]', '[/b]') ;
@@ -83,18 +87,23 @@ export default class Room extends Entity {
 	}
 
 	retrieveItemWithName(name) {
+		if ((typeof name) !== 'string') return consoleErrAndReturnNull("Argument 1 is not a string") ;
 		return this._contents.retrieveItemWithName(this, name) ;
 	}
 
 	moveItem(item, destContents) {
+		if (!instanceCheck(item, Item)) return consoleErrAndReturnNull("Argument 1 is not an Item") ;
+		if (!instanceCheck(destContents, Contents)) return consoleErrAndReturnNull("Argument 2 is not a Contents") ;
 		this._contents.moveItem(this, item, destContents) ;
 	}
 
 	isItemAccessible(item) {
+		if (!instanceCheck(item, Item)) return consoleErrAndReturnNull("Argument 1 is not an Item") ;
 		return this._contents.isItemAccessible(this, item) ;
 	}
 
 	retrieveNPCWithName(name) {
+		if ((typeof name) !== 'string') return consoleErrAndReturnNull("Argument 1 is not a string") ;
 		name = name.toLowerCase() ;
 		const matchingNPC = this._presentNPCs.filter(npc => npc.name.toLowerCase() === name)[0] || null ;
 		return matchingNPC ;

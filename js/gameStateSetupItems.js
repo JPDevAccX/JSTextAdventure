@@ -15,7 +15,7 @@ export default class GameStateSetupItems {
 	// Create the item objects
 	static createItemObjects(itemDefs) {
 		const itemsById = {} ;
-		for (let [itemId, { name, description, attackStrength, contents, isOpen, isLocked, lockingItem, health}] of Object.entries(itemDefs)) {
+		for (let [itemId, { name, description, attackStrength, contents, isOpen, isLocked, lockingItem, health, namingFlags}] of Object.entries(itemDefs)) {
 			let genericItem = null ;
 			if (contents) {
 				if (lockingItem && isLocked === undefined) isLocked = true ; // Default to locked if a locking item was specified
@@ -24,6 +24,7 @@ export default class GameStateSetupItems {
 			}
 			else if (health) genericItem = new ConsumableItem(name, description, health) ;
 			else genericItem = new Item(name, description, attackStrength) ;
+			genericItem.applyFlags(namingFlags) ;
 			itemsById[itemId] = genericItem ;
 		}
 		return itemsById ;
