@@ -158,7 +158,7 @@ export default {
 		'TENTACLE': {
 			name: "tentacle",
 			description: "tentacle",
-			attackStrength: 50 /* 2 hits to kill player with default health */ ///
+			attackStrength: 50 /* 2 hits to kill player with default health */
 		},
 		'STICK': {
 			name: "stick",

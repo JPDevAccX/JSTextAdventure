@@ -18,7 +18,9 @@ function markupToHtml(markup) {
 		'[b]' : '<b>', '[/b]' : '</b>',
 		'[err]' : '<span class="my-err">', '[/err]' : '</span>',
 		'[conv]' : '<span class="my-conv">', '[/conv]' : '</span>',
-		'[warn]' : '<span class="my-warn">', '[/warn]' : '</span>'
+		'[warn]' : '<span class="my-warn">', '[/warn]' : '</span>',
+		'[fail]' : '<span class="my-fail">', '[/fail]' : '</span>',
+		'[win]' : '<span class="my-win">', '[/win]' : '</span>'
 	}
 	for (const [from, to] of Object.entries(replaceTable)) {
 		markup = markup.replaceAll(from, to) ;

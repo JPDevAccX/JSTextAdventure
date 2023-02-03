@@ -11,15 +11,25 @@ export default class GameUIManager {
 			'gameResultsContainer'
 		] ;
 		this.els = getElementsBySelector(selectors, keysToRetrieve) ;
+	
+		this.handleCommandCallback = handleCommandCallback ;
+
+		// Add event listener for the start-game button
+		this.els.gameStartButton.addEventListener('click', gameStartCallback) ;
+	}
+
+	initForGame(gameTitle, gameData) {
+		this.els.gameTitle.innerText = gameTitle ;
+		this.els.gameIntroText.innerText = gameData.introText ;
+		this.gameData = gameData ;
 
 		this.commandHistory = [] ;
 		this.commandHistoryIndex = 0 ;
 
-		// Add event listeners for the start-game button, command input, and command history selection
-		this.els.gameStartButton.addEventListener('click', gameStartCallback) ;
-		document.addEventListener('keydown', (e) => {
+		// Add event listener for the command input, and command history selection
+		this.handleKeyDown = (e) => {
 			if (e.key === "Enter") {
-				handleCommandCallback(this.els.gameInput.value) ;
+				this.handleCommandCallback(this.els.gameInput.value) ;
 				this.commandHistory.push(this.els.gameInput.value) ;
 				this.commandHistoryIndex = this.commandHistory.length ;
 				this.els.gameInput.value = '' ;
@@ -38,13 +48,9 @@ export default class GameUIManager {
 				}
 				e.preventDefault() ;
 			}
-		}) ;
-	}
-
-	initForGame(gameTitle, gameData) {
-		this.els.gameTitle.innerText = gameTitle ;
-		this.els.gameIntroText.innerText = gameData.introText ;
-		this.gameData = gameData ;
+		}
+		document.removeEventListener('keydown', this.handleKeyDown) ;
+		document.addEventListener('keydown', this.handleKeyDown) ;
 	}
 
 	updateUI(stage, gameState = null) {
@@ -58,7 +64,8 @@ export default class GameUIManager {
 			break ;
 			case 'w': // WIN
 			case 'l': // LOSE
-				this.showResults(stage, gameState.score) ;
+				this.showRoomStatus(gameState.player.currentRoom, gameState.outputBuffer) ;
+				this.startShowResults(stage, gameState.score) ;
 			break ;
 			default:
 				console.error("Invalid game state type") ;
@@ -76,12 +83,17 @@ export default class GameUIManager {
 		this.els.gameOutput.scrollTo(0, 1000) ; // Scroll down to bottom
 	}
 
+	startShowResults(gameState, score) {
+		document.removeEventListener('keydown', this.handleKeyDown) ;
+		setInterval(() => this.showResults(gameState, score), 5000) ;
+	}
+
 	// Display win / lose results
 	showResults(gameState, score) {
 		this.setVisibilities(false, false, true) ;
 		this.els.gameResultsContainer.innerHTML = "" ;
-		this.els.gameResultsContainer.innerHTML = (gameState === 'w') ? "You won!" : "You lost!" ;
-		// TODO
+		this.els.gameResultsContainer.innerHTML += (gameState === 'w') ? "You won!" : "You lost!" ;
+		this.els.gameResultsContainer.innerHTML += "<br>Score: " + score ;
 	}
 
 	// Set container element visibilities as required for each stage of the game
