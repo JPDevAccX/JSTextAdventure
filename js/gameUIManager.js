@@ -79,7 +79,8 @@ export default class GameUIManager {
 	// Display win / lose results
 	showResults(gameState, score) {
 		this.setVisibilities(false, false, true) ;
-		this.els.results.innerHTML = "" ;
+		this.els.gameResultsContainer.innerHTML = "" ;
+		this.els.gameResultsContainer.innerHTML = (gameState === 'w') ? "You won!" : "You lost!" ;
 		// TODO
 	}
 
