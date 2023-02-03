@@ -65,8 +65,6 @@ export default class CommandParser {
 		}
 		command = command.trim().replaceAll(/ +/g, ' ') ;
 
-		console.log("parseCommand() : Command (after subs) = '" + command + "'")
-
 		// Parse
 		let parseData = { commandType: 'UNKNOWN' } ;
 		const commandTokens = command.split(' ') ;
@@ -94,8 +92,6 @@ export default class CommandParser {
 		else if (this.basicCommands.includes(commandTokens[0])) {
 			parseData = { commandType: 'COM', command: commandTokens[0] } ; // Basic command (e.g "inventory")
 		}
-
-		console.log("parseCommand() : parseData =", parseData) ;
 
 		return parseData ;
 	}

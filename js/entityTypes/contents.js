@@ -72,7 +72,6 @@ export default class Contents {
 				}
 			}
 		}
-		console.log("Contents > getAccessibleItems() :", {accessibleItems}) ;
 		return accessibleItems ;
 	}
 	
@@ -94,7 +93,6 @@ export default class Contents {
 	isItemAccessible(rootObj, item, recurse = true) {
 		const accessibleItems = this.getAccessibleItems(rootObj, recurse) ;
 		const itemsOnly = accessibleItems.map(entry => entry.item) ;
-		console.log("isItemAccessible", {itemsOnly, item} )
 		return (itemsOnly.includes(item)) ;
 	}
 

@@ -33,15 +33,19 @@ export default class GameStateSetupItems {
 	static placeItemsInItemContainers(itemDefs, itemsById) {
 		for (const [itemId, { contents }] of Object.entries(itemDefs)) {
 			for (const contentsItemId of contents || []) {
-				itemsById[itemId].contents.addItem(itemsById[contentsItemId]) ;
+				if (itemsById[contentsItemId]) itemsById[itemId].contents.addItem(itemsById[contentsItemId]) ;
+				else console.error("Could not find item with id '" + contentsItemId + "'")
 			}
 		}
 	}
 
 	// Link item-containers to key-items
 	static linkItemContainersToKeyItems(itemDefs, itemsById) {
-		for (const [itemId, { lockingItem }] of Object.entries(itemDefs)) {
-			if (lockingItem) itemsById[itemId].lockingItem = itemsById[lockingItem] ;
+		for (const [itemId, { lockingItem: lockingItemId }] of Object.entries(itemDefs)) {
+			if (lockingItemId) {
+				if (itemsById[lockingItemId]) itemsById[itemId].lockingItem = itemsById[lockingItemId] ;
+				else console.error("Could not find item with id '" + lockingItemId + "'")
+			}
 		}
 	}
 }
