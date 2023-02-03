@@ -210,6 +210,21 @@ export default class GameRunManager {
 					else this.outErr("The [b]" + matchingItemWithContainer.item.rawName + "[/b] can not be eaten or drank - at least not without some serious effort") ;
 				}
 			}
+			// Give
+			else if (commandData.verb === 'give') {
+				const { matchingItemWithContainer } = this.retrieveObject(commandData.object, false, true) ;
+				if (matchingItemWithContainer) {
+					const matchingNPC = this.gameState.player.currentRoom.retrieveNPCWithName(commandData.toObject) ;
+					if (matchingNPC) {
+						const transferredItemsDescription = matchingNPC.offerTradeForInventory(matchingItemWithContainer.item, this.gameState.player) ;
+						if (transferredItemsDescription) {
+							this.outInfo("You traded the [b]" + matchingItemWithContainer.item.rawName + "[/b] for " + transferredItemsDescription) ;
+						}
+						else this.outInfo("It doesn't seem that [b]" + matchingNPC.name + "[/b] is too interested in the [b]" + matchingItemWithContainer.item.rawName + "[/b]") ;
+					}
+					else this.outErr("I cannot see '"+ commandData.toObject +"' here") ;
+				}
+			}
 
 			// Post-turn events (for commands that take a turn)
 			if (!['examine'].includes(commandData.verb)) {

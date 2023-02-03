@@ -13,6 +13,7 @@ export default class CommandParser {
 			' with the ' : ' with ',
 			'(^| )eat ' : ' consume ', /* TODO: Could differentiate these in the future - for now just aliases */
 			'(^| )drink ' : ' consume ', /* TODO: Could differentiate these in the future - for now just aliases */
+			'(^| )offer ' : ' give ',
 			'^i$': 'inventory',
 			'^inv$': 'inventory',
 			'^l$': ' look ',
@@ -23,7 +24,7 @@ export default class CommandParser {
 
 		this.verbs = [
 		...[  // Merge in default verbs...
-			'go', 'examine', 'get', 'drop', 'open', 'close', 'unlock', 'lock', 'attack', 'consume'
+			'go', 'examine', 'get', 'drop', 'open', 'close', 'unlock', 'lock', 'attack', 'consume', 'give'
 		],
 			...verbs // ...with custom verbs
 		] ;
@@ -79,6 +80,14 @@ export default class CommandParser {
 					verb: commandTokens[0],
 					object: commandTokens[1],
 					withObject: commandTokens[3]
+				} ;
+			}
+			else if (commandTokens.length === 4 && commandTokens[2] === 'to') { // Verb-noun structure + "to" object
+				parseData = {
+					commandType: 'VN',
+					verb: commandTokens[0],
+					object: commandTokens[1],
+					toObject: commandTokens[3]
 				} ;
 			}
 		}

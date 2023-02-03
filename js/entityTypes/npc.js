@@ -1,4 +1,6 @@
 import Character from "./character.js";
+import Item from "./item.js";
+import Player from "./player.js";
 
 export default class NonPlayerCharacter extends Character {
 	constructor(name, description, greetingMessages = [], health = 100) {
@@ -15,13 +17,18 @@ export default class NonPlayerCharacter extends Character {
 		return this._greetingMessages[i] ;
 	}
 
-	set attackItem(item) { this._attackItem = item ; }
+	set attackItem(item) {
+		if (!instanceCheck(item, Item)) return consoleErrAndReturnNull("Argument 1 is not an Item") ;
+		this._attackItem = item ;
+	}
 	
 	addVulnerabilityItem(item) {
+		if (!instanceCheck(item, Item)) return consoleErrAndReturnNull("Argument 1 is not an Item") ;
 		this._vulnerabiltyItemList.push(item) ;
 	}
 
 	addTradeItem(item) {
+		if (!instanceCheck(item, Item)) return consoleErrAndReturnNull("Argument 1 is not an Item") ;
 		this._tradeInventoryForItemList.push(item) ;
 	}
 
@@ -31,10 +38,13 @@ export default class NonPlayerCharacter extends Character {
 	}
 
 	isVulnerableToItem(item) {
+		if (!instanceCheck(item, Item)) return consoleErrAndReturnNull("Argument 1 is not an Item") ;
 		return (this._vulnerabiltyItemList.includes(item)) ;
 	}
 
 	receiveAttackFromItem(item) {
+		if (!instanceCheck(item, Item)) return consoleErrAndReturnNull("Argument 1 is not an Item") ;
+
 		let isAlive = this.isAlive() ;
 		let message, statusResult ;
 		if (isAlive) {
@@ -57,4 +67,18 @@ export default class NonPlayerCharacter extends Character {
 		}
 		return {statusResult, message} ;
 	}
-}
+
+	offerTradeForInventory(tradeItem, player) {
+		if (!instanceCheck(tradeItem, Item)) return consoleErrAndReturnNull("Argument 1 is not an Item") ;
+		if (!instanceCheck(player, Player)) return consoleErrAndReturnNull("Argument 2 is not a Player") ;
+
+		if (this._tradeInventoryForItemList.includes(tradeItem)) {
+			const inventoryItemsDescription = this.getInventoryDescription() ;
+			this.moveAllItems(player.contents) ;
+			player.moveItem(tradeItem, this.inventory) ;
+			return inventoryItemsDescription ;
+		}
+
+		return null ;
+	}
+ }
