@@ -8,16 +8,15 @@ export default class GameStateSetupRooms {
 		gameData.gameMap.data = GameStateSetupRooms.preProcessGameMapData(gameData.gameMap.data, gameData.gameMap.idLength, noRoomId) ;
 		const roomsById = GameStateSetupRooms.createRoomObjects(gameData.gameMap, gameData.roomDefs, noRoomId) ;
 		GameStateSetupRooms.linkRoomObjectsByExits(roomsById, gameData.gameMap, noRoomId) ;
-		GameStateSetupRooms.addItems(gameData.roomDefs, roomsById, itemsById) ;
-		GameStateSetupRooms.addNonPlayerCharacters(gameData.roomDefs, roomsById, nonPlayerCharactersById) ;
+		GameStateSetupRooms.addContents(gameData.roomDefs, roomsById, itemsById, nonPlayerCharactersById) ;
 		return roomsById ;
 	}
 
 	// Convert the whitespace representation of an empty map-position to a run of vertical bars and then strip remaining whitespace
 	static preProcessGameMapData(gameMapData, idLength, noRoomId) {
 		// 1. Repace |<spaces>| with |<bars>| (denoting position with no room)
-		const noRoomMarkerSearchStr = '|' + ' '.repeat(idLength + 2) + '|' ;
-		const noRoomMarkerReplaceStr = '||' + noRoomId + '||' ;
+		const noRoomMarkerSearchStr = '|' + ' '.repeat(idLength) + '|' ;
+		const noRoomMarkerReplaceStr = '|' + noRoomId + '|' ;
 		gameMapData = gameMapData.replaceAll(noRoomMarkerSearchStr, noRoomMarkerReplaceStr) ;
 		
 		// 2. Strip all other whitespace and return the new string
@@ -47,7 +46,6 @@ export default class GameStateSetupRooms {
 			const mapRoomId = GameStateSetupRooms.readMapRoomId(gameMap.data, charIndex, idStrLength) ;
 			// (ignore map positions with no room)
 			if (mapRoomId !== noRoomId) {
-				console.log("From", mapRoomId) ;
 				// Get room (x,y,z) position
 				const {x, y, z} = GameStateSetupRooms.calcAbsCoordsFromMapCharIndex(gameMap.dims, idStrLength, charIndex) ;
 				// Get adjacent room ids
@@ -72,13 +70,11 @@ export default class GameStateSetupRooms {
 	// Get adjacent room ids (keyed by direction)
 	static getAdjacentAccessibleRoomIds(gameMapData, gameMapDims, idStrLength, noRoomId, x, y, z) {
 		const adjacentAccessibleRoomIdsByDirection = {} ;
-		console.log("@", x, y, z) ;
  		const adjacentRoomOffsets = {n: [0, 1, 0], e: [1, 0, 0], s: [0, -1, 0], w: [-1, 0, 0], u: [0, 0, 1], d: [0, 0, -1]} ;
 		for (const [dir, offset] of Object.entries(adjacentRoomOffsets)) {
 			const [adjX, adjY, adjZ] = [x + offset[0], y + offset[1], z + offset[2]] ;
 			const adjacentRoomId = GameStateSetupRooms.getRoomIdAtXYZPosition(gameMapData, gameMapDims, idStrLength, adjX, adjY, adjZ) ;
 			if (adjacentRoomId !== null && adjacentRoomId !== noRoomId) {
-				console.log("exists '" + dir + "' exit to " + adjacentRoomId) ;
 				adjacentAccessibleRoomIdsByDirection[dir] = adjacentRoomId ;
 			}
 		}
@@ -98,20 +94,13 @@ export default class GameStateSetupRooms {
 		return mapData.substring(charIndex + 1, charIndex + idStrLength - 1) ;
 	}
 
-	// Add items to rooms
-	static addItems(roomDefs, roomsById, itemsById) {
+	// Add contents (items / NPCs) to rooms
+	static addContents(roomDefs, roomsById, itemsById, nonPlayerCharactersById) {
 		for (const [roomId, room] of Object.entries(roomsById)) {
 			for (const globalId of roomDefs[roomId].contents || []) {
 				if (itemsById[globalId]) room.contents.addItem(itemsById[globalId]) ;
-			}
-		}
-	}
-
-	// Add NPCs to rooms
-	static addNonPlayerCharacters(roomDefs, roomsById, nonPlayerCharactersById) {
-		for (const [roomId, room] of Object.entries(roomsById)) {
-			for (const globalId of roomDefs[roomId].contents || []) {
-				if (nonPlayerCharactersById[globalId]) room.addNPC(nonPlayerCharactersById[globalId]) ;
+				else if (nonPlayerCharactersById[globalId]) room.addNPC(nonPlayerCharactersById[globalId]) ;
+				else console.error("Could not find item or NPC with id '" + globalId + "'") ;
 			}
 		}
 	}

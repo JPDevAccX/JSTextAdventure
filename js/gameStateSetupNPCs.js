@@ -25,7 +25,8 @@ export default class GameStateSetupNPCs {
 	static addItemsToInventory(npcDefs, nonPlayerCharactersById, itemsById) {
 		for (const [npcId, npc] of Object.entries(nonPlayerCharactersById)) {
 			for (const itemId of npcDefs[npcId].inventory || []) {
-				npc.contents.addItem(itemsById[itemId]) ;
+				if (itemsById[itemId]) npc.contents.addItem(itemsById[itemId]) ;
+				else console.error("Could not find item with id '" + itemId + "'") ;
 			}
 		}
 	}
@@ -34,7 +35,8 @@ export default class GameStateSetupNPCs {
 	static addItemsToVulnerabilityList(npcDefs, nonPlayerCharactersById, itemsById) {
 		for (const [npcId, npc] of Object.entries(nonPlayerCharactersById)) {
 			for (const itemId of npcDefs[npcId].vulnerabiltyItemList || []) {
-				npc.addVulnerabilityItem(itemsById[itemId]) ;
+				if (itemsById[itemId]) npc.addVulnerabilityItem(itemsById[itemId]) ;
+				else console.error("Could not find item with id '" + itemId + "'") ;
 			}
 		}
 	}
@@ -43,7 +45,8 @@ export default class GameStateSetupNPCs {
 	static addItemsToTradeInventoryForItemList(npcDefs, nonPlayerCharactersById, itemsById) {
 		for (const [npcId, npc] of Object.entries(nonPlayerCharactersById)) {
 			for (const itemId of npcDefs[npcId].tradeInventoryForItemList || []) {
-				npc.addTradeItem(itemsById[itemId]) ;
+				if (itemsById[itemId]) npc.addTradeItem(itemsById[itemId]) ;
+				else console.error("Could not find item with id '" + itemId + "'") ;
 			}
 		}
 	}
@@ -52,7 +55,8 @@ export default class GameStateSetupNPCs {
 	static linkNPCsToAttackItems(npcDefs, nonPlayerCharactersById, itemsById) {
 		for (const [npcId, npc] of Object.entries(nonPlayerCharactersById)) {
 			const itemId = npcDefs[npcId].attackItem || null ;
-			npc.attackItem = itemsById[itemId] ;
+			if (itemId !== null && itemsById[itemId]) npc.attackItem = itemsById[itemId] ;
+			else if (itemId !== null) console.error("Could not find item with id '" + itemId + "'") ;
 		}
 	}
 }

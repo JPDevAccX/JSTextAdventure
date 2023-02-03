@@ -99,4 +99,11 @@ export default class Room extends Entity {
 		const matchingNPC = this._presentNPCs.filter(npc => npc.name.toLowerCase() === name)[0] || null ;
 		return matchingNPC ;
 	}
+
+	isHostileNPCInRoom() {
+		for (const npc of this._presentNPCs) {
+			if (npc.getAttack()) return true ;
+		}
+		return false ;
+	}
 }

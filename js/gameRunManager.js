@@ -14,6 +14,7 @@ export default class GameRunManager {
 			...this.gameState,
 			...{
 				player : new Player(),
+				prevRoom: null,
 				score: 0,
 				outputBuffer: new OutputBuffer()
 			}
@@ -62,9 +63,16 @@ export default class GameRunManager {
 				if (VALID_TRAVEL_DIRECTIONS.includes(dest)) {
 					const linkedRoom = this.gameState.player.currentRoom.getLinkedRoom(dest) ; ;
 					if (linkedRoom)	{
-						this.gameState.player.currentRoom = linkedRoom ; // Move player
-						this.gameState.outputBuffer.clear() ;
-						this.outInfo(linkedRoom.getFullDescription()) ;
+						// Allow travel if no hostiles or going back to previous room
+						if (!this.gameState.player.currentRoom.isHostileNPCInRoom() || linkedRoom === this.gameState.prevRoom) {
+							this.gameState.prevRoom = this.gameState.player.currentRoom ;
+							this.gameState.player.currentRoom = linkedRoom ; // Move player
+							this.gameState.outputBuffer.clear() ;
+							this.outInfo(linkedRoom.getFullDescription()) ;
+						}
+						else {
+							this.outErr('An enemy is in the way!') ;
+						}
 					}
 					else {
 						this.outErr('You cannot go in that direction') ;
@@ -188,7 +196,9 @@ export default class GameRunManager {
 							// NPCs drop inventory when killed
 							if (statusResult === 'killed') {
 								const npcInventoryDescription = matchingNPC.getInventoryDescription() ;
-								this.outInfo(matchingNPC.name + " " + "dropped the following items: " + npcInventoryDescription) ;
+								if (npcInventoryDescription) {
+									this.outInfo(matchingNPC.name + " " + "dropped the following items: " + npcInventoryDescription) ;
+								}
 								matchingNPC.moveAllItems(this.gameState.player.currentRoom.contents) ;
 							}
 						}
