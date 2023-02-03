@@ -205,7 +205,7 @@ export default class GameRunManager {
 						if (healthChange === 0) this.outInfo("Hmm, Tasty!...but you don't feel any different.") ;
 						else if (healthChange < 0) this.outWarning("Oooooh. You don't feel well after consuming that!") ;
 						else if (healthChange > 0) this.outInfo("Wow! That hit the spot! You feel much better!") ;
-						if (!isPlayerAlive) this.outInfo("[[[You died]]]") ;
+						if (!isPlayerAlive) return this.handleDeathCondition() ;
 					}
 					else this.outErr("The [b]" + matchingItemWithContainer.item.rawName + "[/b] can not be eaten or drank - at least not without some serious effort") ;
 				}
@@ -218,9 +218,12 @@ export default class GameRunManager {
 				if (attackData) {
 					this.outWarning(attackData.messages) ;
 					const isAlive = this.gameState.player.changeHealthBy(-attackData.totalDamage) ;
-					if (!isAlive) this.outInfo("[[[You died]]]") ;
+					if (!isAlive) return this.handleDeathCondition() ;
 				}
 			}
+
+			// Check if win condition achieved
+			if (this.checkForWinCondition()) return ['w', this.gameState] ;
 		}
 		else {
 			this.outErr('Unknown command "'+ command + '"') ;
@@ -260,5 +263,18 @@ export default class GameRunManager {
 	}
 	outWarning(msg) {
 		this.gameState.outputBuffer.add('> [warn]' + msg + '[/warn]') ;
+	}
+
+	handleDeathCondition() {
+		this.gameState.outputBuffer.add('[fail]*** YOU DIED ***[/fail]') ;
+		return ['l', this.gameState] ;
+	}
+
+	checkForWinCondition() {
+		if (this.gameState.player.currentRoom === this.gameState.winCondition.goalRoom) {
+			this.gameState.outputBuffer.add('[win]*** YOU WIN! ***[/win]') ;
+			return true ;
+		}
+		return false ;
 	}
 }

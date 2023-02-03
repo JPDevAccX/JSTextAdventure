@@ -132,5 +132,9 @@ export default {
 			vulnerabiltyItemList: ["TESTPLAYERATTACKITEM"],
 			health: 300
 		}
+	},
+	winCondition: {
+		type: 'ENTER_ROOM', /* currently ignored as is only type supported */
+		targetId: 'DEN1' /* room id */
 	}
 } ;
