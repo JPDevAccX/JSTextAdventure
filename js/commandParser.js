@@ -8,6 +8,9 @@ export default class CommandParser {
 			'(^| )pick up ' : ' get ',
 			'(^| )retrieve ' : ' get ',
 			'(^| )shut ' : ' close ',
+			' using ' : ' with ',
+			' using the ' : ' with ',
+			' with the ' : ' with ',
 			'^i$': 'inventory',
 			'^inv$': 'inventory',
 			'^l$': ' look ',
@@ -18,7 +21,7 @@ export default class CommandParser {
 
 		this.verbs = [
 		...[  // Merge in default verbs...
-			'go', 'examine', 'get', 'drop', 'open', 'close', 'unlock', 'lock'
+			'go', 'examine', 'get', 'drop', 'open', 'close', 'unlock', 'lock', 'attack'
 		],
 			...verbs // ...with custom verbs
 		] ;
@@ -65,7 +68,17 @@ export default class CommandParser {
 		let parseData = { commandType: 'UNKNOWN' } ;
 		const commandTokens = command.split(' ') ;
 		if (this.verbs.includes(commandTokens[0])) {
-			parseData = { commandType: 'VN', verb: commandTokens[0], object: commandTokens[1] } ; // Verb-noun structure (e.g. "go west" or "attack monster")
+			if (commandTokens.length === 2) { // Verb-noun structure (e.g. "go west" or "attack monster")
+				parseData = { commandType: 'VN', verb: commandTokens[0], object: commandTokens[1] } ;
+			}
+			else if (commandTokens.length === 4 && commandTokens[2] === 'with') { // Verb-noun structure + "with" object
+				parseData = {
+					commandType: 'VN',
+					verb: commandTokens[0],
+					object: commandTokens[1],
+					withObject: commandTokens[3]
+				} ;
+			}
 		}
 		else if (this.basicCommands.includes(commandTokens[0])) {
 			parseData = { commandType: 'COM', command: commandTokens[0] } ; // Basic command (e.g "inventory")

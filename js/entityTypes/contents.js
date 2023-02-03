@@ -32,6 +32,16 @@ export default class Contents {
 		sourceContainer.contents.removeItem(item) ;
 	}
 
+	moveAllItems(rootObj, destContents, recurse = true) {
+		if (!rootObj.contents) return consoleErrAndReturnNull("Argument 1 does not have a Contents") ;
+		if (!instanceCheck(destContents, Contents)) return consoleErrAndReturnNull("Argument 2 is not a Contents") ;
+
+		const accessibleItems = this.getAccessibleItems(rootObj, recurse) ;
+		for (const {item} of accessibleItems) {
+			this.moveItem(rootObj, item, destContents, recurse) ;
+		}
+	}
+
 	getContainerForAccessibleItem(rootObj, searchItem, recurse = true) {
 		const accessibleItems = this.getAccessibleItems(rootObj, recurse) ;
 		const matchingItemWithContainer = accessibleItems.filter(({item}) => item === searchItem)[0] ;

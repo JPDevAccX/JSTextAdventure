@@ -15,8 +15,8 @@ export default class GameStateSetupNPCs {
 	// Create the NPC objects
 	static createNonPlayerCharacterObjects(npcDefs) {
 		const nonPlayerCharactersById = {} ;
-		for (let [npcId, { name, description, greetingMessages}] of Object.entries(npcDefs)) {
-			nonPlayerCharactersById[npcId] = new NonPlayerCharacter(name, description, greetingMessages) ;
+		for (let [npcId, { name, description, greetingMessages, health}] of Object.entries(npcDefs)) {
+			nonPlayerCharactersById[npcId] = new NonPlayerCharacter(name, description, greetingMessages, health) ;
 		}
 		return nonPlayerCharactersById ;
 	}

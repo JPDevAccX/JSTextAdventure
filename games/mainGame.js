@@ -22,7 +22,7 @@ export default {
 		'HOME' : {
 			name: "Home",
 			description: "It's home! It's where you start!",
-			contents: ['TESTITEM', 'TESTCONTAINER', 'LOCKABLETESTCONTAINER', 'TESTKEY', 'TESTNPC']
+			contents: ['TESTITEM', 'TESTCONTAINER', 'LOCKABLETESTCONTAINER', 'TESTKEY', 'TESTNPC', 'TESTPLAYERATTACKITEM', 'TESTPLAYERATTACKITEM2']
 		},
 		'TRE1' : {
 			name: "Treasure Room 1",
@@ -89,11 +89,16 @@ export default {
 		'TESTENEMYATTACKITEM': {
 			name: "TestEnemyAttackItem",
 			description: "a test enemy attack item",
-			attackStrength: 50
+			attackStrength: 20
 		},
 		'TESTPLAYERATTACKITEM': {
 			name: "TestPlayerAttackItem",
 			description: "a test player attack item",
+			attackStrength: 100
+		},
+		'TESTPLAYERATTACKITEM2': {
+			name: "TestPlayerAttackItem2",
+			description: "a test player attack item (2)",
 			attackStrength: 100
 		}
 	},
@@ -104,7 +109,6 @@ export default {
 			greetingMessages: ["Test greeting message (1)!", "Test greeting message (2)!"],
 			inventory: ["TESTUSEFULITEM1"],
 			tradeInventoryForItemList: ["TESTUSEFULITEM2"]
-			
 		},
 		'TESTENEMYNPC': {
 			name: "TestEnemyNPC",
@@ -112,7 +116,8 @@ export default {
 			greetingMessages: ["Angry test greeting message (1)!", "Angry test greeting message (2)!"],
 			inventory: ["TESTENEMYATTACKITEM"],
 			attackItem: "TESTENEMYATTACKITEM",
-			vulnerabiltyItemList: ["TESTPLAYERATTACKITEM"]
+			vulnerabiltyItemList: ["TESTPLAYERATTACKITEM"],
+			health: 300
 		}
 	}
 } ;
