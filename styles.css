@@ -98,6 +98,11 @@ body {
 	font-family: monospace ;
 }
 
+.my-results {
+	font-size: 300% ;
+	text-align: center; 
+}
+
 /*--------------------------------------------------------
 |                  Misc element styling                  |
 --------------------------------------------------------*/
@@ -119,6 +124,14 @@ body {
 }
 .my-conv {
 	color: #22ff22; 
+}
+.my-fail {
+	color: gray ;
+	font-size: 120% ;
+}
+.my-win {
+	color: blueviolet ;
+	font-size: 120% ;
 }
 
 /*--------------------------------------------------------

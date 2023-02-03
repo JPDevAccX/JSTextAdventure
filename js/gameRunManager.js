@@ -195,6 +195,7 @@ export default class GameRunManager {
 							this.outInfo(message) ;
 							// NPCs drop inventory when killed
 							if (statusResult === 'killed') {
+								this.gameState.score += 10 ;
 								const npcInventoryDescription = matchingNPC.getInventoryDescription() ;
 								if (npcInventoryDescription) {
 									this.outInfo(matchingNPC.name + " " + "dropped the following items: " + npcInventoryDescription) ;
