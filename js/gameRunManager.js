@@ -196,6 +196,20 @@ export default class GameRunManager {
 				}
 				else this.outErr("I cannot see '"+ commandData.object +"' here") ;
 			}
+			// Eat
+			else if (commandData.verb === 'consume') {
+				const { matchingItemWithContainer } = this.retrieveObject(commandData.object, false, true) ;
+				if (matchingItemWithContainer) {
+					if (matchingItemWithContainer.item.eat) {
+						const {isPlayerAlive, healthChange} = matchingItemWithContainer.item.eat(matchingItemWithContainer.container.contents, this.gameState.player) ;
+						if (healthChange === 0) this.outInfo("Hmm, Tasty!...but you don't feel any different.") ;
+						else if (healthChange < 0) this.outWarning("Oooooh. You don't feel well after consuming that!") ;
+						else if (healthChange > 0) this.outInfo("Wow! That hit the spot! You feel much better!") ;
+						if (!isPlayerAlive) this.outInfo("[[[You died]]]") ;
+					}
+					else this.outErr("The [b]" + matchingItemWithContainer.item.rawName + "[/b] can not be eaten or drank - at least not without some serious effort") ;
+				}
+			}
 
 			// Post-turn events (for commands that take a turn)
 			if (!['examine'].includes(commandData.verb)) {

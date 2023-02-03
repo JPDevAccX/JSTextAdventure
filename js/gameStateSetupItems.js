@@ -1,6 +1,7 @@
 // Type: Module
 
 import ContainerItem from './entityTypes/containerItem.js';
+import ConsumableItem from './entityTypes/consumableItem.js';
 import Item from './entityTypes/item.js';
 
 export default class GameStateSetupItems {
@@ -14,10 +15,16 @@ export default class GameStateSetupItems {
 	// Create the item objects
 	static createItemObjects(itemDefs) {
 		const itemsById = {} ;
-		for (let [itemId, { name, description, attackStrength, contents, isOpen, isLocked, lockingItem}] of Object.entries(itemDefs)) {
-			if (lockingItem && isLocked === undefined) isLocked = true ; // Default to locked if a locking item was specified
-			if (isLocked && isOpen === undefined) isOpen = false ; // Default to closed if locked
-			itemsById[itemId] = (contents) ? new ContainerItem(name, description, isOpen, isLocked) : new Item(name, description, attackStrength) ;
+		for (let [itemId, { name, description, attackStrength, contents, isOpen, isLocked, lockingItem, health}] of Object.entries(itemDefs)) {
+			let genericItem = null ;
+			if (contents) {
+				if (lockingItem && isLocked === undefined) isLocked = true ; // Default to locked if a locking item was specified
+				if (isLocked && isOpen === undefined) isOpen = false ; // Default to closed if locked
+				genericItem = new ContainerItem(name, description, isOpen, isLocked) ;
+			}
+			else if (health) genericItem = new ConsumableItem(name, description, health) ;
+			else genericItem = new Item(name, description, attackStrength) ;
+			itemsById[itemId] = genericItem ;
 		}
 		return itemsById ;
 	}
