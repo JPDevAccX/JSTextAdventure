@@ -2,32 +2,28 @@
 // Note: Based off code from "JSQuiz" project
 
 export default class GameUIManager {
-	constructor(selectors, gameStartCallback, handleCommandCallback) {
+	constructor(selectors, gameStartCallback, gameResetCallback, handleCommandCallback) {
 		// Get elements / templates
 		const keysToRetrieve = [
 			'gameTitle', 'gameSelectorContainer', 'gameIntroText', 
 			'gameStartButton', 
 			'gameMainContainer', 'gameProgressStatus', 'currentRoomNameDisplay', 'gameOutput', 'gameInput',
-			'gameResultsContainer'
+			'gameEndContainer', 'gameResultsContainer', 'resetButton'
 		] ;
 		this.els = getElementsBySelector(selectors, keysToRetrieve) ;
 	
 		this.handleCommandCallback = handleCommandCallback ;
 
-		// Add event listener for the start-game button
+		// Add event listener for the start and restart buttons
 		this.els.gameStartButton.addEventListener('click', gameStartCallback) ;
-	}
-
-	initForGame(gameTitle, gameData) {
-		this.els.gameTitle.innerText = gameTitle ;
-		this.els.gameIntroText.innerText = gameData.introText ;
-		this.gameData = gameData ;
-
-		this.commandHistory = [] ;
-		this.commandHistoryIndex = 0 ;
+		this.els.resetButton.addEventListener('click', () => {
+			this.unlockGameInput() ;
+			gameResetCallback() ;
+		}) ;
 
 		// Add event listener for the command input, and command history selection
 		this.handleKeyDown = (e) => {
+			console.log("keydown") ;
 			if (!this.els.gameInput.disabled) {
 				if (e.key === "Enter") {
 					this.handleCommandCallback(this.els.gameInput.value) ;
@@ -50,8 +46,20 @@ export default class GameUIManager {
 			}
 			if (["ArrowUp", "ArrowDown"].includes(e.key)) e.preventDefault() ;
 		}
-		document.removeEventListener('keydown', this.handleKeyDown) ;
 		document.addEventListener('keydown', this.handleKeyDown) ;
+	}
+
+	initForGame(gameTitle, gameData) {
+		this.els.gameTitle.innerText = gameTitle ;
+		this.els.gameIntroText.innerText = gameData.introText ;
+		this.gameData = gameData ;
+
+		this.resetCommandHistory() ;
+	}
+
+	resetCommandHistory() {
+		this.commandHistory = [] ;
+		this.commandHistoryIndex = 0 ;
 	}
 
 	updateUI(stage, gameState = null) {
@@ -86,8 +94,7 @@ export default class GameUIManager {
 	}
 
 	startShowResults(gameState, score) {
-		document.removeEventListener('keydown', this.handleKeyDown) ;
-		setInterval(() => this.showResults(gameState, score), 10000) ;
+		setTimeout(() => this.showResults(gameState, score), 10000) ;
 	}
 
 	// Display win / lose results
@@ -102,7 +109,7 @@ export default class GameUIManager {
 	setVisibilities(gameTitleVisible, inGameVisible, resultsVisible) {
 		this.els.gameSelectorContainer.classList.toggle('d-none', !gameTitleVisible) ;
 		this.els.gameMainContainer.classList.toggle('d-none', !inGameVisible) ;
-		this.els.gameResultsContainer.classList.toggle('d-none', !resultsVisible) ;
+		this.els.gameEndContainer.classList.toggle('d-none', !resultsVisible) ;
 	}
 
 	lockGameInput() {
@@ -112,18 +119,19 @@ export default class GameUIManager {
 		this.els.gameInput.disabled = false ;
 	}
 
-	inputCommand(command, completionCallback) {
+	inputCommand(command, completionCallback, charDelay = 300) {
 		let i = 0 ;
 		const timer = setInterval(() => {
-			this.els.gameInput.value += command.charAt(i) ;
-			i++ ;
+			if (charDelay > 0) this.els.gameInput.value += command.charAt(i) ;
+			else this.els.gameInput.value = command ;
+			i += ((charDelay === 0) ? command.length : 1) ;
 			if (i === command.length) {
 				clearInterval(timer) ;
 				setTimeout(() => {
 					this.els.gameInput.value = '' ;
 					this.handleCommandCallback(command) ;
 					completionCallback() ;
-				}, 300) ;
+				}, charDelay) ;
 			}
 		}, 75) ;
 	}

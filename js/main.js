@@ -9,7 +9,7 @@ import GameUIManager from "./gameUIManager.js";
 // --- Create manager objects ---
 const gameDataManager = new GameDataManager('../games') ; // (manages the game-list / current-game data)
 const gameListUIManager = new GameListUIManager(selectors) // (manages the game-list user-interface)
-const gameUIManager = new GameUIManager(selectors, startGame, handleCommand) ; // (manages the user-interface for the current game)
+const gameUIManager = new GameUIManager(selectors, startGame, reset, handleCommand) ; // (manages the user-interface for the current game)
 const gameRunManager = new GameRunManager(gameUIManager) ; // (manages the current game state)
 
 // --- Load README for "Site Information" tab ---
@@ -52,7 +52,7 @@ async function doGameSetup() {
 	// Load the data for the first game in the list and update the UI accordingly
 	const gameData = await gameDataManager.loadGameByIndex(0) ;
 	gameUIManager.initForGame(gameList[0].title, gameData) ;
-	gameUIManager.updateUI('t') // Title 
+	gameUIManager.updateUI('t') ; // Title 
 
 	// Do the basic setup for the game-list bootstrap carousel
 	const carouselEl = document.querySelector('#carousel')
@@ -85,6 +85,12 @@ function startGame() {
 // Update game state and UI depending on the user's command
 function handleCommand(command) {
 	const [stage, gameState] = gameRunManager.runCommand.bind(gameRunManager)(command) ;
-	if (stage === 'r') startGame() ;
+	if (stage === 'restart') startGame() ;
+	else if (stage === 'reset') reset() ;
 	else gameUIManager.updateUI(stage, gameState) ;
+}
+
+function reset() {
+	gameUIManager.resetCommandHistory() ; 
+	gameUIManager.updateUI('t') ; // Title 
 }

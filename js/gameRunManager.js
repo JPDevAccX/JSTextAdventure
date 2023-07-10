@@ -30,7 +30,7 @@ export default class GameRunManager {
 
 		// Initial room description
 		this.gameState.outputBuffer.add(this.gameState.player.currentRoom.getFullDescription()) ;
-		this.outInfo("Commands: " + this.commandParser.getCommands().join(' ')) ;
+		this.outInfo("Commands: " + this.commandParser.getCommandListString()) ;
 
 		// Return current game state
 		return ['g', this.gameState] ;
@@ -54,7 +54,7 @@ export default class GameRunManager {
 		if (commandData.commandType === 'COM') {
 			// Help
  			if (commandData.command === 'help') {
-				this.outInfo("Commands: " + this.commandParser.getCommands().join(' ')) ;
+				this.outInfo("Commands: " + this.commandParser.getCommandListString()) ;
 			}
 			// Inventory
 			else if (commandData.command === 'inventory') {
@@ -64,17 +64,25 @@ export default class GameRunManager {
 			else if (commandData.command === 'look') {
 				this.outInfo(this.gameState.player.currentRoom.getFullDescription()) ;
 			}
-			// Demo
-			else if (commandData.command === 'demo') {
-				const confirmDemo = confirm("This will restart the game and then complete an automatic walkthrough. Are you sure?") ;
+			// Demo / Test
+			else if (commandData.command === 'demo' || commandData.command === 'testmodeactivate') {
+				const confirmDemo = (commandData.command === 'testmodeactivate') ||
+					confirm("This will restart the game and then complete an automatic walkthrough. Are you sure?") ;
 				if (confirmDemo) {
 					this.demoCommands = this.gameData.demo.split(",").map(command => command.trim()) ;
 					this.demoTurn = 0 ;
+					this.quickDemo = (commandData.command === 'testmodeactivate') ;
 					this.gameUIManager.lockGameInput() ;
 					setTimeout(() => this.nextDemoAction(), 3000) ;
-					return ['r', this.gameState] ; // (pseudo-state for game-reset)
+					return ['restart', this.gameState] ; // (pseudo-state for game-restart)
 				}
 				else this.outInfo("So you want to take on the dungeon by yourself? Very courageous!") ;
+			}
+			// Reset
+			else if (commandData.command === 'reset') {
+				const confirmRestart = confirm("Are you sure?") ;
+				if (confirmRestart) return ['reset', this.gameState] ; // (pseudo-state for reset)
+				else this.outInfo("That's the spirit! Don't let the thought of gruesome monsters and dark passageways hold you back!") ;
 			}
 		}
 		// Verb-noun commands
@@ -315,12 +323,14 @@ export default class GameRunManager {
 
 	handleDeathCondition() {
 		this.gameState.outputBuffer.add('[fail]*** YOU DIED ***[/fail]') ;
+		this.gameUIManager.lockGameInput() ;
 		return ['l', this.gameState] ;
 	}
 
 	checkForWinCondition() {
 		if (this.gameState.player.currentRoom === this.gameState.winCondition.goalRoom) {
 			this.gameState.outputBuffer.add('[win]*** YOU WIN! ***[/win]') ;
+			this.gameUIManager.lockGameInput() ;
 			return true ;
 		}
 		return false ;
@@ -329,15 +339,14 @@ export default class GameRunManager {
 	nextDemoAction() {
 		const [demoCommand, quickMarker] = this.demoCommands[this.demoTurn].split('!') ;
 		this.demoTurn++ ;
-		let nextInterval = 3000 ;
+		let nextInterval = (this.quickDemo) ? 100 : 3000 ;
 		if (!this.demoCommands[this.demoTurn]) nextInterval = null ;
-		else if (quickMarker === "") nextInterval = 750 ;
+		else if (quickMarker === "") nextInterval = (this.quickDemo) ? 300 : 750 ;
 		console.log(quickMarker, nextInterval) ;
-		this.gameUIManager.inputCommand(demoCommand, () => this.demoCommandCompleteCallback(nextInterval)) ;
+		this.gameUIManager.inputCommand(demoCommand, () => this.demoCommandCompleteCallback(nextInterval), (this.quickDemo) ? 0 : 300) ;
 	}
 
 	demoCommandCompleteCallback(nextInterval) {
-		if (nextInterval === null) this.gameUIManager.unlockGameInput() ;
-		else setTimeout(() => this.nextDemoAction(), nextInterval) ;
+		if (nextInterval !== null) setTimeout(() => this.nextDemoAction(), nextInterval) ;
 	}
 }

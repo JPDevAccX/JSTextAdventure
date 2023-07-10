@@ -157,4 +157,8 @@ body {
 	padding-bottom: 0 ;
 	font-size: 200%;
 	filter: drop-shadow(0 0 0.3rem black) ;
+	text-shadow: 2px 2px 1px black ;
+}
+.carousel_item_summary {
+	font-size: max(24px, 2vw) ;
 }
