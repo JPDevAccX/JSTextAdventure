@@ -9,8 +9,8 @@ import GameUIManager from "./gameUIManager.js";
 // --- Create manager objects ---
 const gameDataManager = new GameDataManager('../games') ; // (manages the game-list / current-game data)
 const gameListUIManager = new GameListUIManager(selectors) // (manages the game-list user-interface)
-const gameRunManager = new GameRunManager() ; // (manages the current game state)
 const gameUIManager = new GameUIManager(selectors, startGame, handleCommand) ; // (manages the user-interface for the current game)
+const gameRunManager = new GameRunManager(gameUIManager) ; // (manages the current game state)
 
 // --- Load README for "Site Information" tab ---
 fetch('README.md').
@@ -85,5 +85,6 @@ function startGame() {
 // Update game state and UI depending on the user's command
 function handleCommand(command) {
 	const [stage, gameState] = gameRunManager.runCommand.bind(gameRunManager)(command) ;
-	gameUIManager.updateUI(stage, gameState) ;
+	if (stage === 'r') startGame() ;
+	else gameUIManager.updateUI(stage, gameState) ;
 }

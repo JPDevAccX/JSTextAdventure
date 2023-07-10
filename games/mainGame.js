@@ -230,5 +230,12 @@ export default {
 	winCondition: {
 		type: 'ENTER_ROOM', /* currently ignored as is only type supported */
 		targetId: 'EXIT' /* room id */
-	}
+	},
+	demo: `
+		south,south,south,west,west,get bag-of-marbles,w,get potion,e!,e!,e!,s,n,e,e,n,n,e,
+		inventory,open bag-of-marbles, give green-marble to officeguy-the-immortal,w!,s!,s!,s!,
+		get bucket,n!,w!,w!,w!,w!,n,n,attack chesty with bucket,attack chesty with bucket,n,
+		open red-chest,unlock red-chest,open red-chest,get red-paint,s!,s!,s!,drink potion,e!,e!,e!,
+		e!,s!,e,attack blue-larry with red-paint,s,attack red-harry with blue-paint,s
+	`
 } ;
