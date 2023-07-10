@@ -7,7 +7,12 @@ import Player from "./entityTypes/player.js";
 const VALID_TRAVEL_DIRECTIONS = ['n', 'e', 's', 'w', 'u', 'd']
 
 export default class GameRunManager {
+	constructor(gameUIManager) {
+		this.gameUIManager = gameUIManager ;
+	}
+
 	newRun(gameData) {
+		this.gameData = gameData ;
 		this.commandParser = new CommandParser() ;
 		this.gameState = GameStateSetup.setup(gameData) ; // Set up initial state from game data
 		this.gameState = { // Merge in player state, etc
@@ -25,6 +30,7 @@ export default class GameRunManager {
 
 		// Initial room description
 		this.gameState.outputBuffer.add(this.gameState.player.currentRoom.getFullDescription()) ;
+		this.outInfo("Commands: " + this.commandParser.getCommands().join(' ')) ;
 
 		// Return current game state
 		return ['g', this.gameState] ;
@@ -57,6 +63,18 @@ export default class GameRunManager {
 			// Look
 			else if (commandData.command === 'look') {
 				this.outInfo(this.gameState.player.currentRoom.getFullDescription()) ;
+			}
+			// Demo
+			else if (commandData.command === 'demo') {
+				const confirmDemo = confirm("This will restart the game and then complete an automatic walkthrough. Are you sure?") ;
+				if (confirmDemo) {
+					this.demoCommands = this.gameData.demo.split(",").map(command => command.trim()) ;
+					this.demoTurn = 0 ;
+					this.gameUIManager.lockGameInput() ;
+					setTimeout(() => this.nextDemoAction(), 3000) ;
+					return ['r', this.gameState] ; // (pseudo-state for game-reset)
+				}
+				else this.outInfo("So you want to take on the dungeon by yourself? Very courageous!") ;
 			}
 		}
 		// Verb-noun commands
@@ -306,5 +324,20 @@ export default class GameRunManager {
 			return true ;
 		}
 		return false ;
+	}
+
+	nextDemoAction() {
+		const [demoCommand, quickMarker] = this.demoCommands[this.demoTurn].split('!') ;
+		this.demoTurn++ ;
+		let nextInterval = 3000 ;
+		if (!this.demoCommands[this.demoTurn]) nextInterval = null ;
+		else if (quickMarker === "") nextInterval = 750 ;
+		console.log(quickMarker, nextInterval) ;
+		this.gameUIManager.inputCommand(demoCommand, () => this.demoCommandCompleteCallback(nextInterval)) ;
+	}
+
+	demoCommandCompleteCallback(nextInterval) {
+		if (nextInterval === null) this.gameUIManager.unlockGameInput() ;
+		else setTimeout(() => this.nextDemoAction(), nextInterval) ;
 	}
 }

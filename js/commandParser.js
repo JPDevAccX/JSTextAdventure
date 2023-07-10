@@ -31,7 +31,7 @@ export default class CommandParser {
 		] ;
 
 		this.basicCommands = [
-			'help', 'inventory', 'look'
+			'demo', 'help', 'inventory', 'look'
 		]
 
 		// Compile the substitution 'from' regexps ahead of time
