@@ -31,8 +31,10 @@ export default class CommandParser {
 		] ;
 
 		this.basicCommands = [
-			'demo', 'help', 'inventory', 'look'
+			'demo', 'testmodeactivate', 'help', 'inventory', 'look', 'reset'
 		]
+
+		this.hiddenCommands = ['testmodeactivate'] ;
 
 		// Compile the substitution 'from' regexps ahead of time
 		this.compiledRegExps = {} ;
@@ -99,5 +101,9 @@ export default class CommandParser {
 
 	getCommands() {
 		return [...this.basicCommands, ...this.verbs, ] ;
+	}
+
+	getCommandListString() {
+		return this.getCommands().filter(command => !this.hiddenCommands.includes(command)).join(' ') ;
 	}
 }
