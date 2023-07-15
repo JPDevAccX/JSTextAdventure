@@ -77,11 +77,11 @@ window.onload = function() {
 		document.querySelector(selectors.gameBody).classList.remove('invisible') ;
 	}
 
-function startGame() {
-	// Start a new run for this game
-	const [stage, gameState] = gameRunManager.newRun(gameDataManager.getGameData()) ;
-	gameUIManager.updateUI(stage, gameState) ;
-}
+	function startGame() {
+		// Start a new run for this game
+		const [stage, gameState] = gameRunManager.newRun(gameDataManager.getGameData()) ;
+		gameUIManager.newRun(stage, gameState) ;
+	}
 
 	// Update game state and UI depending on the user's command
 	function handleCommand(command) {

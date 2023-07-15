@@ -18,10 +18,7 @@ export default class GameUIManager {
 
 		// Add event listener for the start and restart buttons
 		this.els.gameStartButton.addEventListener('click', gameStartCallback) ;
-		this.els.resetButton.addEventListener('click', () => {
-			this.unlockGameInput() ;
-			gameResetCallback() ;
-		}) ;
+		this.els.resetButton.addEventListener('click', gameResetCallback) ;
 
 		// Add event listener for the command input, and command history selection
 		this.handleKeyDown = (e) => {
@@ -63,6 +60,8 @@ export default class GameUIManager {
 				}
 			}
 		}) ;
+
+		this.lockGameInput() ;
 	}
 
 	initForGame(gameTitle, gameData) {
@@ -76,6 +75,11 @@ export default class GameUIManager {
 	resetCommandHistory() {
 		this.commandHistory = [] ;
 		this.commandHistoryIndex = 0 ;
+	}
+
+	newRun(stage, gameState) {
+		this.unlockGameInput() ;
+		this.updateUI(stage, gameState) ;
 	}
 
 	updateUI(stage, gameState = null) {
