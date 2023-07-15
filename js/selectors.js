@@ -20,5 +20,15 @@ export default {
 	gameInput: '#command_input',
 	gameEndContainer: '#game_end_container',
 	gameResultsContainer: '#results_container',
-	resetButton: '#reset_button'
+	resetButton: '#reset_button',
+
+	compass: '#compass',
+	n_compassDark: '#compass_n_dark',
+	n_compassLight: '#compass_n_light',
+	e_compassDark: '#compass_e_dark',
+	e_compassLight: '#compass_e_light',
+	s_compassDark: '#compass_s_dark',
+	s_compassLight: '#compass_s_light',
+	w_compassDark: '#compass_w_dark',
+	w_compassLight: '#compass_w_light',
 } ;

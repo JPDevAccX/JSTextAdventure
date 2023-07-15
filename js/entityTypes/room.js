@@ -34,9 +34,13 @@ export default class Room extends Entity {
 		if (!Object.keys(EXITS).includes(dir)) return consoleErrAndReturnNull("Argument 1 is not a valid exit direction") ;
 		return this._linkedRooms[dir] ;
 	}
-1
+	
+	getExits() {
+		return Object.keys(this._linkedRooms) ;
+	}
+
 	getExitsDescription() {
-		const exitNames = Object.keys(this._linkedRooms).map(dir => EXITS[dir]) ;
+		const exitNames = this.getExits().map(dir => EXITS[dir]) ;
 		const exitsStr = createEntityListDescription(exitNames, '[b]', '[/b]') ;
 		
 		if (exitNames.length === 1) return "The only exit is to the " + exitsStr ;
