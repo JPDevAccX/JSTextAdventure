@@ -342,7 +342,6 @@ export default class GameRunManager {
 		let nextInterval = (this.quickDemo) ? 100 : 3000 ;
 		if (!this.demoCommands[this.demoTurn]) nextInterval = null ;
 		else if (quickMarker === "") nextInterval = (this.quickDemo) ? 300 : 750 ;
-		console.log(quickMarker, nextInterval) ;
 		this.gameUIManager.inputCommand(demoCommand, () => this.demoCommandCompleteCallback(nextInterval), (this.quickDemo) ? 0 : 300) ;
 	}
 

@@ -60,7 +60,6 @@ body {
 .my-progress-status {
 	font-size: 120% ;
 	font-weight: bold ;
-	margin-bottom: 1em;
 	font-family: 'Roboto', sans-serif ;
 	text-align: center;
 }
@@ -68,11 +67,41 @@ body {
 .my-current-room-name-display {
 	font-size: 120% ;
 	font-weight: bold ;
-	margin-bottom: 1em;
 	font-family: 'Roboto', sans-serif ;
 	text-align: center;
 }
 
+/* Compass */
+.my-compass {
+	width: min(175px, 25vw);
+	height: min(175px, 25vw);
+	outline: 2px inset black;
+	background-color: black;
+}
+
+.my-compass-direction-dark {
+	fill: #030 !important ;
+}
+
+.my-compass-direction-light {
+	fill: #050 !important;
+}
+
+.my-compass-isexit-dark {
+	fill: #0b0 !important ;
+}
+
+.my-compass-isexit-light {
+	fill: #0f2 !important;
+}
+
+/* Game map */
+.my-game-map {
+	width: min(175px, 25vw);
+	height: min(175px, 25vw);
+	outline: 2px inset black;
+	background-color: black;
+}
 /* Styling for game output and input elements */
 .my-game-output {
 	height: 300px;

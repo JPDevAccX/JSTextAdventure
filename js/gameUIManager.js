@@ -8,6 +8,8 @@ export default class GameUIManager {
 			'gameTitle', 'gameSelectorContainer', 'gameIntroText', 
 			'gameStartButton', 
 			'gameMainContainer', 'gameProgressStatus', 'currentRoomNameDisplay', 'gameOutput', 'gameInput',
+			'compass',
+			'n_compassDark', 'n_compassLight', 'e_compassDark', 'e_compassLight', 's_compassDark', 's_compassLight', 'w_compassDark', 'w_compassLight',
 			'gameEndContainer', 'gameResultsContainer', 'resetButton'
 		] ;
 		this.els = getElementsBySelector(selectors, keysToRetrieve) ;
@@ -23,7 +25,6 @@ export default class GameUIManager {
 
 		// Add event listener for the command input, and command history selection
 		this.handleKeyDown = (e) => {
-			console.log("keydown") ;
 			if (!this.els.gameInput.disabled) {
 				if (e.key === "Enter") {
 					this.handleCommandCallback(this.els.gameInput.value) ;
@@ -47,6 +48,21 @@ export default class GameUIManager {
 			if (["ArrowUp", "ArrowDown"].includes(e.key)) e.preventDefault() ;
 		}
 		document.addEventListener('keydown', this.handleKeyDown) ;
+
+		this.els.compass.addEventListener('click', (e) => {
+			if (!this.els.gameInput.disabled) {
+				const isDirection = /^compass_.*/.test(e.target.id) ;
+				if (isDirection) {
+					if (e.target.classList.contains("my-compass-isexit-dark") || e.target.classList.contains("my-compass-isexit-light")) {
+						const direction = e.target.id.charAt(8) ;
+						this.handleCommandCallback(direction) ;
+						this.commandHistory.push(direction) ;
+						this.commandHistoryIndex = this.commandHistory.length ;
+						this.els.gameInput.value = '' ;
+					}
+				}
+			}
+		}) ;
 	}
 
 	initForGame(gameTitle, gameData) {
@@ -90,7 +106,17 @@ export default class GameUIManager {
 		this.setVisibilities(false, true, false) ;
 		this.els.currentRoomNameDisplay.innerText = currentRoom.rawName ;
 		this.els.gameOutput.innerHTML = outputBuffer.getProcessedBufferText((entry) => markupToHtml(entry) + "<br>") ;
+		this.updateExitsCompass(currentRoom) ;
 		this.els.gameOutput.scrollTo(0, 1000) ; // Scroll down to bottom
+	}
+
+	updateExitsCompass(currentRoom) {
+		const roomExits = currentRoom.getExits() ;
+		for (const exit of ['n', 'e', 's', 'w']) {
+			const isRoomExit = roomExits.includes(exit) ;
+			this.els[exit + '_compassDark'].classList.toggle('my-compass-isexit-dark', isRoomExit) ;
+			this.els[exit + '_compassLight'].classList.toggle('my-compass-isexit-light', isRoomExit) ;
+		}
 	}
 
 	startShowResults(gameState, score) {
