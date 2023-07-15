@@ -28,7 +28,7 @@ export default class GameUIManager {
 		this.els.gameMap.children[3 + 3 * 7].classList.add('my-current-room') ;
 
 		// Add event listeners for the start and restart buttons
-		this.els.gameStartButton.addEventListener('click', gameStartCallback) ;
+		this.els.gameStartButton.addEventListener('click', () => gameStartCallback()) ;
 		this.els.resetButton.addEventListener('click', gameResetCallback) ;
 
 		// Add event listener for the command input, and command history selection
@@ -88,9 +88,10 @@ export default class GameUIManager {
 		this.commandHistoryIndex = 0 ;
 	}
 
-	newRun(stage, gameState) {
+	newRun(stage, gameState, lockGameInput = false) {
 		gameState.revealedMapArray = [] ;
-		this.unlockGameInput() ;
+		if (lockGameInput) this.lockGameInput() ;
+		else this.unlockGameInput() ;
 		this.updateUI(stage, gameState) ;
 	}
 

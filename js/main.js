@@ -77,16 +77,16 @@ window.onload = function() {
 		document.querySelector(selectors.gameBody).classList.remove('invisible') ;
 	}
 
-	function startGame() {
+	function startGame(lockGameInput = false) {
 		// Start a new run for this game
 		const [stage, gameState] = gameRunManager.newRun(gameDataManager.getGameData()) ;
-		gameUIManager.newRun(stage, gameState) ;
+		gameUIManager.newRun(stage, gameState, lockGameInput) ;
 	}
 
 	// Update game state and UI depending on the user's command
 	function handleCommand(command) {
 		const [stage, gameState] = gameRunManager.runCommand.bind(gameRunManager)(command) ;
-		if (stage === 'restart') startGame() ;
+		if (stage === 'restart') startGame(true) ; // (used for demo/test mode so lock the command-input)
 		else if (stage === 'reset') reset() ;
 		else gameUIManager.updateUI(stage, gameState) ;
 	}

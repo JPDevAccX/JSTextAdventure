@@ -72,7 +72,6 @@ export default class GameRunManager {
 					this.demoCommands = this.gameData.demo.split(",").map(command => command.trim()) ;
 					this.demoTurn = 0 ;
 					this.quickDemo = (commandData.command === 'testmodeactivate') ;
-					this.gameUIManager.lockGameInput() ;
 					setTimeout(() => this.nextDemoAction(), 3000) ;
 					return ['restart', this.gameState] ; // (pseudo-state for game-restart)
 				}
