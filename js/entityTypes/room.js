@@ -6,11 +6,12 @@ import NonPlayerCharacter from "./npc.js";
 const EXITS = { 'n' : 'North', 'e' : 'East', 's' : 'South', 'w' : 'West', 'u' : 'Up', 'd' : 'Down' } ;
 
 export default class Room extends Entity {
-	constructor(roomDef) {
+	constructor(roomDef, coords) {
 		super(roomDef.name, roomDef.description) ;
 		this._linkedRooms = {} ; // No linked rooms initially
 		this._contents = new Contents() ; // No contents initially
 		this._presentNPCs = [] ; // No NPCs initially
+		this._coords = coords ; // Map coordinates
 	}
 
 	get contents() { return this._contents ; }
@@ -28,6 +29,10 @@ export default class Room extends Entity {
 	addNPC(npc) {
 		if (!instanceCheck(npc, NonPlayerCharacter)) return consoleErrAndReturnNull("Argument 1 is not an NPC") ;
 		this._presentNPCs.push(npc) ;
+	}
+
+	get coords() {
+		return [...this._coords] ;
 	}
 
 	getLinkedRoom(dir) {

@@ -87,3 +87,10 @@ function createEntityListDescription(entityList, entityPrependStr = '', entityAp
 function randomInt(n) {
 	return Math.floor(Math.random() * n) ;
 }
+
+// Read an entry from a flattened 3D array
+function readFlattened3DArrayEntry(array, arrayDims, x, y, z) {
+	if (x < 0 || y < 0 || z < 0) return null ;
+	if (x >= arrayDims.x || y >= arrayDims.y || z >= arrayDims.z) return null ;
+	return array[(x + (y * arrayDims.x) + (z * arrayDims.x * arrayDims.y))] ;
+}

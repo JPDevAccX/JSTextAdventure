@@ -10,13 +10,24 @@ export default class GameUIManager {
 			'gameMainContainer', 'gameProgressStatus', 'currentRoomNameDisplay', 'gameOutput', 'gameInput',
 			'compass',
 			'n_compassDark', 'n_compassLight', 'e_compassDark', 'e_compassLight', 's_compassDark', 's_compassLight', 'w_compassDark', 'w_compassLight',
+			'gameMap',
 			'gameEndContainer', 'gameResultsContainer', 'resetButton'
 		] ;
 		this.els = getElementsBySelector(selectors, keysToRetrieve) ;
 	
 		this.handleCommandCallback = handleCommandCallback ;
 
-		// Add event listener for the start and restart buttons
+		// Map setup
+		for (let yOff = 3; yOff >= -3; yOff--) {
+			for (let xOff = -3; xOff <= 3; xOff++) {
+				const mapBlockEl = document.createElement('div') ;
+				mapBlockEl.className = 'my-map-block' ;
+				this.els.gameMap.appendChild(mapBlockEl) ;
+			}
+		}
+		this.els.gameMap.children[3 + 3 * 7].classList.add('my-current-room') ;
+
+		// Add event listeners for the start and restart buttons
 		this.els.gameStartButton.addEventListener('click', gameStartCallback) ;
 		this.els.resetButton.addEventListener('click', gameResetCallback) ;
 
@@ -78,6 +89,7 @@ export default class GameUIManager {
 	}
 
 	newRun(stage, gameState) {
+		gameState.revealedMapArray = [] ;
 		this.unlockGameInput() ;
 		this.updateUI(stage, gameState) ;
 	}
@@ -89,12 +101,12 @@ export default class GameUIManager {
 			break ;
 			case 'g': // IN-GAME
 				this.setProgressDescription(gameState.score) ;
-				this.showRoomStatus(gameState.player.currentRoom, gameState.outputBuffer) ;
+				this.showRoomStatus(gameState.player.currentRoom, gameState.outputBuffer, gameState.revealedMapArray, gameState.mapDims) ;
 				this.els.gameInput.focus() ;
 			break ;
 			case 'w': // WIN
 			case 'l': // LOSE
-				this.showRoomStatus(gameState.player.currentRoom, gameState.outputBuffer) ;
+				this.showRoomStatus(gameState.player.currentRoom, gameState.outputBuffer, gameState.revealedMapArray, gameState.mapDims) ;
 				this.startShowResults(stage, gameState.score) ;
 			break ;
 			default:
@@ -106,11 +118,12 @@ export default class GameUIManager {
 		this.els.gameProgressStatus.innerHTML = 'Score: ' + score + "<br>" ;
 	}
 
-	showRoomStatus(currentRoom, outputBuffer) {
+	showRoomStatus(currentRoom, outputBuffer, revealedMapArray, mapDims) {
 		this.setVisibilities(false, true, false) ;
 		this.els.currentRoomNameDisplay.innerText = currentRoom.rawName ;
 		this.els.gameOutput.innerHTML = outputBuffer.getProcessedBufferText((entry) => markupToHtml(entry) + "<br>") ;
 		this.updateExitsCompass(currentRoom) ;
+		this.updateMapDisplay(revealedMapArray, mapDims, currentRoom) ;
 		this.els.gameOutput.scrollTo(0, 1000) ; // Scroll down to bottom
 	}
 
@@ -120,6 +133,44 @@ export default class GameUIManager {
 			const isRoomExit = roomExits.includes(exit) ;
 			this.els[exit + '_compassDark'].classList.toggle('my-compass-isexit-dark', isRoomExit) ;
 			this.els[exit + '_compassLight'].classList.toggle('my-compass-isexit-light', isRoomExit) ;
+		}
+	}
+
+	updateRevealedMapArray(revealedMapArray, mapDims, currentRoom) {
+		const [cx, cy, cz] = currentRoom.coords ;
+
+		// (current room - for handling entrance and potentially 'teleportation' in future)
+		revealedMapArray[cx + cy * mapDims.x + cz * mapDims.x * mapDims.y] = true ;
+
+		// (adjoining rooms)
+		const roomExits = currentRoom.getExits() ;
+		const adjacentRoomOffsets = {n: [0, 1, 0], e: [1, 0, 0], s: [0, -1, 0], w: [-1, 0, 0], u: [0, 0, 1], d: [0, 0, -1]} ;
+		for (const exit of ['n', 'e', 's', 'w']) {
+			const isRoomExit = roomExits.includes(exit) ;
+			if (isRoomExit) {
+				const x = cx + adjacentRoomOffsets[exit][0] ;
+				const y = cy + adjacentRoomOffsets[exit][1] ;
+				const z = cz + adjacentRoomOffsets[exit][2] ;
+				revealedMapArray[x + y * mapDims.x + z * mapDims.x * mapDims.y] = true ;
+			}
+		}
+	}
+
+	updateMapDisplay(revealedMapArray, mapDims, currentRoom) {
+		this.updateRevealedMapArray(revealedMapArray, mapDims, currentRoom) ;
+		const [cx, cy, cz] = currentRoom.coords ;
+		
+		let i = 0 ;
+		const mapBlockEls = this.els.gameMap.children ;
+		for (let yOff = 3; yOff >= -3; yOff--) {
+			for (let xOff = -3; xOff <= 3; xOff++) {
+				const x = cx + xOff ;
+				const y = cy + yOff ;
+				const z = cz ;
+				const isKnown = readFlattened3DArrayEntry(revealedMapArray, mapDims, x, y, z) ;
+				mapBlockEls[i].classList.toggle('is-room', !!isKnown) ;
+				i++ ;
+			}
 		}
 	}
 

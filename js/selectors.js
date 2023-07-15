@@ -31,4 +31,6 @@ export default {
 	s_compassLight: '#compass_s_light',
 	w_compassDark: '#compass_w_dark',
 	w_compassLight: '#compass_w_light',
+
+	gameMap: '#game_map'
 } ;
