@@ -101,7 +101,25 @@ body {
 	height: min(175px, 25vw);
 	outline: 2px inset black;
 	background-color: black;
+	display: flex ;
+	flex-wrap: wrap ;
 }
+
+.my-map-block {
+	width: calc(100%/7) ;
+	height: calc(100%/7) ;
+	outline: 1px solid darkblue ;
+}
+
+.my-map-block.is-room {
+	background-color: blue ;
+}
+
+.my-map-block.my-current-room {
+	border: 2px dashed white ;
+	z-index: 2 ;
+}
+
 /* Styling for game output and input elements */
 .my-game-output {
 	height: 300px;
